@@ -1,0 +1,4 @@
+.nav-link>span.active,
+.nav-link>span:hover {
+    background-color: rgb(50, 50, 50) !important;
+}

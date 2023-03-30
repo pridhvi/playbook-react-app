@@ -1,0 +1,20 @@
+body {
+    background-color: rgb(35, 35, 35) !important;
+    color: white;
+}
+
+.wb-text-gray {
+    color: rgb(156, 156, 156) !important;
+}
+
+.wb-rounded-border {
+    border-radius: 30px;
+}
+
+.wb-bg-gray {
+    background-color: rgb(50, 50, 50) !important;
+}
+
+.wb-bg-gray-light {
+    background-color: rgb(62, 62, 62) !important;
+}
