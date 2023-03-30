@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
 
 interface LoginProps {
 
@@ -51,7 +50,7 @@ const Login: React.FC<LoginProps> = ({ }) => {
                                 <label htmlFor="usernamePassword">Password</label>
                                 <input value={password} onChange={passwordChangeHandler}
                                     type={showPassword ? "text": "password"} className="d-inline form-control" id="passwordInput" placeholder="Password" />
-                                <i className="d-inline bi bi-eye-slash text-black" 
+                                <i className={`d-inline bi ${showPassword?"bi-eye-slash":"bi-eye"} text-black`} 
                                     onClick={()=> setShowPassword(!showPassword)}></i>
                             </div>
                             <button type="submit" className="btn btn-success mt-3 mb-3">Submit</button>
@@ -85,7 +84,7 @@ const Login: React.FC<LoginProps> = ({ }) => {
                                 <label htmlFor="passwordInput">Password</label>
                                 <input value={password} onChange={passwordChangeHandler}
                                     type={showPassword ? "text": "password"} className="d-inline form-control" id="passwordInput" placeholder="Enter new password" />
-                                <i className="d-inline bi bi-eye-slash text-black" 
+                                <i className={`d-inline bi ${showPassword?"bi-eye-slash":"bi-eye"} text-black`} 
                                     onClick={()=> setShowPassword(!showPassword)}></i>
                                 <small id="usernameHelp" className="form-text text-muted">Choose a strong password.</small>
                             </div>
@@ -93,7 +92,7 @@ const Login: React.FC<LoginProps> = ({ }) => {
                                 <label htmlFor="confirmPasswordInput">Confirm Password</label>
                                 <input value={confirmPassword} onChange={confirmPasswordChangeHandler}
                                     type={showPassword ? "text": "password"} className="d-inline form-control" id="confirmPasswordInput" placeholder="Enter password again" />
-                                <i className="d-inline bi bi-eye-slash text-black" 
+                                <i className={`d-inline bi ${showPassword?"bi-eye-slash":"bi-eye"} text-black`}  
                                     onClick={()=> setShowPassword(!showPassword)}></i>
                             </div>
                             <button type="submit" className="btn btn-success mt-3 mb-3">Submit</button>
