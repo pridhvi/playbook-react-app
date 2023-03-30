@@ -2,3 +2,8 @@
 .nav-link>span:hover {
     background-color: rgb(50, 50, 50) !important;
 }
+
+form i {
+    margin-left: -30px;
+    cursor: pointer;
+}

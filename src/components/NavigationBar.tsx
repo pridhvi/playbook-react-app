@@ -22,23 +22,23 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ }) => {
 
 
         <Link className="nav-link p-0 d-flex justify-content-center" to="/search">
-          <span className={`wb-text-gray rounded-pill ms-1 me-1 p-1 pe-2 ps-2 pe-md-3 ps-md-3 ${(active === 'search') ? 'active' : ''}`}>
+          <span className={`wb-text-gray rounded-pill ms-1 me-1 p-1 pe-3 ps-3 ${(active === 'search') ? 'active' : ''}`}>
             <i className="me-2 bi bi-search"></i>
             <span>Search</span>
           </span>
         </Link>
 
         <Link className="nav-link p-0 d-flex justify-content-center" to="/profile">
-          <span className={`wb-text-gray rounded-pill ms-1 me-1 p-1 pe-2 ps-2 pe-md-3 ps-md-3 ${(active === 'profile') ? 'active' : ''}`}>
+          <span className={`wb-text-gray rounded-pill ms-1 me-1 p-1 pe-3 ps-3 ${(active === 'profile') ? 'active' : ''}`}>
             <i className="me-2 bi bi-person"></i>
             <span>Profile</span>
           </span>
         </Link>
       </div>
 
-      <Link className="ms-auto nav-link p-0 ps-2 pe-2 d-flex justify-content-center align-items-center rounded-pill bg-black shadow border border-info" to="/login">
-        <span className={`wb-text-gray rounded-pill p-1 pe-2 ps-2 ${(active === 'login') ? 'active' : ''}`}>
-          <i className="text-info me-md-2 bi bi-box-arrow-in-right"></i>
+      <Link className="ms-auto nav-link p-0 d-flex justify-content-center align-items-center rounded-pill bg-black shadow border border-info" to="/login">
+        <span className={`h-100 wb-text-gray rounded-pill p-1 pe-2 ps-2 d-flex justify-content-center align-items-center ${(active === 'login') ? 'active' : ''}`}>
+          <i className="text-info ms-2 ms-md-0 me-2 bi bi-box-arrow-in-right"></i>
           <span className='d-none d-md-inline'>Log In</span>
         </span>
       </Link>
