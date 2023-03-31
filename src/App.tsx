@@ -17,7 +17,7 @@ const App: React.FC = () => {
       <ApiProvider api={iceAndFireApi}>
         <div>
           <img
-            src="../../public/map-full.jpg"
+            src="/map-full.jpg"
             alt="got-map"
             className="wb-bg-image"
             loading="eager"
