@@ -5,13 +5,13 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ }) => {
-    const [active, setActive] = useState("login");
-    const [showPassword, setShowPassword] = useState(false);
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [active, setActive] = useState<string>("login");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [firstName, setFirstName] = useState<string>("");
+    const [lastName, setLastName] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [confirmPassword, setConfirmPassword] = useState<string>("");
 
     const firstNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => setFirstName(e.target.value)
     const lastNameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => setLastName(e.target.value)
@@ -24,7 +24,7 @@ const Login: React.FC<LoginProps> = ({ }) => {
 
     return (
         <div className='row container m-auto'>
-            <div className='col-12 col-md-10 col-lg-7 container bg-black wb-rounded-border'>
+            <div className='col-12 col-md-10 col-lg-7 container bg-black wb-rounded-border bg-opacity-75'>
                 <div className='container d-flex justify-content-center'>
                     <button
                         onClick={() => setActive("login")}

@@ -7,3 +7,16 @@ form i {
     margin-left: -30px;
     cursor: pointer;
 }
+
+@font-face {
+    font-family: gameOfThrones;
+    src: url(./assets/GameofThrones.ttf);
+}
+
+.wb-websteros {
+    font-family: gameOfThrones;
+    left: 250px;
+    top: 30px;
+    text-shadow: 0px 0px 20px red;
+    /* color: rgba(255, 0, 0, 1); */
+}
