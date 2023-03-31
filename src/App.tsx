@@ -15,7 +15,7 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <ApiProvider api={iceAndFireApi}>
-        <div>
+        <div className="wb-bg-image-div">
           <img
             src="/map-full.jpg"
             alt="got-map"
