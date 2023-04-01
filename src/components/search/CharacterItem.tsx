@@ -1,5 +1,4 @@
 import React from "react";
-import { Character } from "../../types";
 import { Link } from "react-router-dom";
 
 interface CharacterItemProps {
