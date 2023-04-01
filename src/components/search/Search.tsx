@@ -43,7 +43,7 @@ const Search: React.FC<SearchProps> = ({}) => {
         </div>
       </div>
 
-      {/* <p>{games}</p> */}
+      <p>{games}</p>
 
     </div>
   );
