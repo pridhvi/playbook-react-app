@@ -8,13 +8,10 @@ import Search from "./components/search/Search";
 import Login from "./components/login/Login";
 import { Provider } from "react-redux";
 import { store } from "./redux/Store";
-import { ApiProvider } from "@reduxjs/toolkit/dist/query/react";
-import { iceAndFireApi } from "./services/iceandfire";
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <ApiProvider api={iceAndFireApi}>
           <BrowserRouter>
             <NavigationBar />
             <Routes>
@@ -24,8 +21,6 @@ const App: React.FC = () => {
               <Route path="/login" element={<Login />}></Route>
             </Routes>
           </BrowserRouter>
-        
-      </ApiProvider>
     </Provider>
   );
 };

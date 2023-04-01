@@ -9,10 +9,9 @@ const NavigationBar: React.FC<NavigationBarProps> = ({}) => {
 
   return (
     <>
-      <Link className="wb-websteros position-absolute d-none d-xxl-inline text-decoration-none text-danger" to="/">
-        <h1>WEBSTEROS</h1>
+      <Link className="wb-logo d-none d-xl-inline text-decoration-none" to="/">
+        <img src="/playbook-logo.png" height="50px"></img>
       </Link>
-
       <div className="container d-flex justify-content-center pt-4 mb-3 mb-md-5">
         <Link
           className="ms-auto nav-link p-0 ps-2 pe-2 d-flex justify-content-center align-items-center rounded-pill bg-black shadow"

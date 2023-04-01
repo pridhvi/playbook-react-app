@@ -1,17 +1,6 @@
 body {
     background-color: rgb(35, 35, 35) !important;
     color: white;
-    background-image: url('./assets/map-full.jpg');
-    /* background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed; */
-    height: 100%; 
-
-  /* Create the parallax scrolling effect */
-  background-attachment: fixed;
-  /* background-position: center; */
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 .wb-text-gray {
@@ -39,3 +28,12 @@ body {
     background-color: rgb(103, 51, 30, 1);
     /* #67331e; */
 }
+
+.wb-logo {
+    position: absolute;
+    left: 150px;
+    top: 25px;
+}
+ .wb-logo:hover {
+    cursor: pointer;
+ }
