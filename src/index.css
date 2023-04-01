@@ -1,23 +1,17 @@
 body {
     background-color: rgb(35, 35, 35) !important;
     color: white;
-    /* background-image: url('./assets/map-full.jpg');
-    background-repeat: no-repeat;
+    background-image: url('./assets/map-full.jpg');
+    /* background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed; */
-}
+    height: 100%; 
 
-.wb-bg-image-div {
-    width: 100vw;
-}
-
-.wb-bg-image {
-    pointer-events: none;
-    position: absolute;
-    /* height: 100%; */
-    width: 100%;
-    z-index: -1;
-    opacity: 60%;
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  /* background-position: center; */
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .wb-text-gray {
@@ -34,4 +28,14 @@ body {
 
 .wb-bg-gray-light {
     background-color: rgb(62, 62, 62) !important;
+}
+
+.wb-bg-brown {
+    background-color: rgb(103, 51, 30, 0.5);
+    /* #67331e; */
+}
+
+.wb-bg-brown:hover {
+    background-color: rgb(103, 51, 30, 1);
+    /* #67331e; */
 }

@@ -15,23 +15,16 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <ApiProvider api={iceAndFireApi}>
-        <div className="wb-bg-image-div">
-          <img
-            src="/map-full.jpg"
-            alt="got-map"
-            className="wb-bg-image"
-            loading="eager"
-          />
-        </div>
-        <BrowserRouter>
-          <NavigationBar />
-          <Routes>
-            <Route index element={<Home />}></Route>
-            <Route path="/profile" element={<Profile />}></Route>
-            <Route path="/search" element={<Search />}></Route>
-            <Route path="/login" element={<Login />}></Route>
-          </Routes>
-        </BrowserRouter>
+          <BrowserRouter>
+            <NavigationBar />
+            <Routes>
+              <Route index element={<Home />}></Route>
+              <Route path="/profile" element={<Profile />}></Route>
+              <Route path="/search" element={<Search />}></Route>
+              <Route path="/login" element={<Login />}></Route>
+            </Routes>
+          </BrowserRouter>
+        
       </ApiProvider>
     </Provider>
   );
