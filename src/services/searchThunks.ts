@@ -3,7 +3,7 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // const IGDB_API_URL = "http://localhost:4000/api/igdb";
-const IGDB_API_URL = process.env.IGDB_API_BASE;
+const IGDB_API_URL = "https://playbook-node-server.onrender.com/api/igdb";
 
 export const searchCriteriaThunk = createAsyncThunk<
 SearchResult[],
