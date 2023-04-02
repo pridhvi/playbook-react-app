@@ -67,7 +67,7 @@ const Search: React.FC<SearchProps> = ({}) => {
         </div>
       </div>
 
-      {loading && <LoadingSpinner />}
+      {loading ? <LoadingSpinner />: null}
 
       {isSearch && searchResult.length > 0 && (
         <div className="container col-12 mt-3 d-flex justify-content-center">
