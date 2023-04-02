@@ -19,13 +19,15 @@ body {
     background-color: rgb(62, 62, 62) !important;
 }
 
-.wb-bg-brown {
-    background-color: rgb(103, 51, 30, 0.5);
+.wb-search-item {
+    background-color: rgb(103, 51, 30);
+    opacity: 0.8 !important;
     /* #67331e; */
 }
 
-.wb-bg-brown:hover {
-    background-color: rgb(103, 51, 30, 1);
+.wb-search-item:hover {
+    /* background-color: rgb(103, 51, 30, 1); */
+    opacity: 1 !important;
     /* #67331e; */
 }
 
@@ -34,6 +36,20 @@ body {
     left: 150px;
     top: 25px;
 }
- .wb-logo:hover {
+
+.wb-logo:hover {
     cursor: pointer;
- }
+}
+
+.wb-search-icon {
+    margin-left: -55px;
+    margin-top: 0px;
+    border: 0;
+    font-size: 1.4em;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.wb-search-icon:hover {
+    /* background-color: lightgray; */
+    background-color: rgb(50, 50, 50);
+}
