@@ -2,8 +2,8 @@ import { Cover, Game, SearchResult } from "../types";
 import axios, { AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const IGDB_API_URL = "http://localhost:4000/api/igdb";
-// const IGDB_API_URL = "https://playbook-node-server.onrender.com/api/igdb";
+// const IGDB_API_URL = "http://localhost:4000/api/igdb";
+const IGDB_API_URL = "https://playbook-node-server.onrender.com/api/igdb";
 
 export const searchCriteriaThunk = createAsyncThunk<
   SearchResult[],
