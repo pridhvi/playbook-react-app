@@ -104,6 +104,7 @@ const Search: React.FC<SearchProps> = ({}) => {
         </div>
       )}
 
+
     </div>
   );
 };

@@ -23,7 +23,7 @@ const Game: React.FC<GameProps> = ({}) => {
       {game ? (
         <>
           <h1>{game.name}</h1>
-          <img src={`https:${game.cover}`} height="250px" alt="cover" />
+          <img src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.split("/")[7]}`} height="250px" alt="cover" />
           {game.storyline ? (
             <>
               <h3>Storyline: </h3>

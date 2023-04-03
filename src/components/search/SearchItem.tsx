@@ -28,7 +28,7 @@ const SearchItem: React.FC<SearchItemProps> = ({ s }) => {
     <>
       <Link
         target="_blank"
-        className={`col-3 wb-search-item wb-rounded-border border text-decoration-none text-white m-2 
+        className={`col-2 wb-search-item wb-rounded-border border text-decoration-none text-white m-2 
         ${s.game && "bg-success"} ${s.character && "bg-warning"} ${
           s.platform && "bg-danger"
         } 
