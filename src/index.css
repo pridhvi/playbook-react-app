@@ -1,6 +1,10 @@
 body {
     background-color: rgb(35, 35, 35) !important;
     color: white;
+    background-image: url(/background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .wb-text-gray {
