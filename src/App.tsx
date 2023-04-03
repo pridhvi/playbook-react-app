@@ -8,6 +8,9 @@ import Search from "./components/search/Search";
 import Login from "./components/login/Login";
 import { Provider } from "react-redux";
 import { store } from "./redux/Store";
+import Game from "./components/details/Game";
+import Platform from "./components/details/Platform";
+import Character from "./components/details/Character";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +22,9 @@ const App: React.FC = () => {
               <Route path="/profile" element={<Profile />}></Route>
               <Route path="/search" element={<Search />}></Route>
               <Route path="/login" element={<Login />}></Route>
+              <Route path="/details/games/:id" element={<Game />}></Route>
+              <Route path="/details/platforms/:id" element={<Platform />}></Route>
+              <Route path="/details/characters/:id" element={<Character />}></Route>
             </Routes>
           </BrowserRouter>
     </Provider>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { searchCriteriaThunk } from "../../services/searchThunks";
+import { searchCriteriaThunk } from "../../services/igdbThunks";
 import { SearchResult } from "../../types";
 import { AppDispatch } from "../../redux/Store";
 import SearchItem from "./SearchItem";
@@ -81,7 +81,7 @@ const Search: React.FC<SearchProps> = ({}) => {
               }
             }}
           >
-            Prev
+            <i className="bi bi-caret-left"></i>
           </button>
           {/* <input value={pageNumber + 1} size={2} className="ms-2 me-2" /> */}
           <h5 className="ms-2 me-2 mt-2">{pageNumber + 1}</h5>
@@ -91,7 +91,7 @@ const Search: React.FC<SearchProps> = ({}) => {
             className="btn btn-secondary text-white"
             onClick={() => setPageNumber(pageNumber + 1)}
           >
-            Next
+            <i className="bi bi-caret-right"></i>
           </button>
         </div>
       )}
@@ -103,6 +103,7 @@ const Search: React.FC<SearchProps> = ({}) => {
           ))}
         </div>
       )}
+
     </div>
   );
 };

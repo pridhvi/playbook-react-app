@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { searchCriteriaThunk } from "../services/searchThunks";
+import { searchCriteriaThunk } from "../services/igdbThunks";
 import { SearchResult } from "../types";
 
 interface ModalState {
