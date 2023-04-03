@@ -1,4 +1,4 @@
-import { Game, SearchResult } from "../types";
+import { Cover, Game, SearchResult } from "../types";
 import axios, { AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -30,10 +30,10 @@ export const findGameByIdThunk = createAsyncThunk(
     const game: Game = gameData.data[0];
     const coverId = Number(game.cover);
 
-    const coverURL: AxiosResponse<string, any> = await axios.get(
+    const cover: AxiosResponse<Cover, any> = await axios.get(
       `${IGDB_API_URL}/covers/${coverId}`
     );
-    game.cover = coverURL.data;
+    game.cover = cover.data.url;
     return game;
   }
 );

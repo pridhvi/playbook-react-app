@@ -72,8 +72,8 @@ export type Game = {
   websites: number[];
 };
 
-// export type Cover = {
-//   url: string;
-//   height: number;
-//   width: number;
-// }
+export type Cover = {
+  url: string;
+  height: number;
+  width: number;
+}
