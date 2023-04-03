@@ -28,12 +28,14 @@ export const findGameByIdThunk = createAsyncThunk(
       `${IGDB_API_URL}/games/${id}`
     );
     const game: Game = gameData.data[0];
-    const coverId = Number(game.cover);
+    if (game.cover) {
+      const coverId = Number(game.cover);
 
-    const cover: AxiosResponse<Cover, any> = await axios.get(
-      `${IGDB_API_URL}/covers/${coverId}`
-    );
-    game.cover = cover.data.url;
+      const cover: AxiosResponse<Cover, any> = await axios.get(
+        `${IGDB_API_URL}/covers/${coverId}`
+      );
+      game.cover = cover.data.url;
+    }
     return game;
   }
 );
