@@ -13,25 +13,24 @@ const Search: React.FC<SearchProps> = ({}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isSearch, setIsSearch] = useState<boolean>(false);
   const [criteria, setCriteria] = useState<string>("");
-  const { searchResult, loading } = useSelector(
+  const { searchResult, loading: searchLoading } = useSelector(
     (state: any) => state.searchData
   );
-  const [pageSize, setPageSize] = useState<number>(20);
-  const [pageNumber, setPageNumber] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [pageNumber, setPageNumber] = useState<number>(-1);
+  const [isGames, setIsGames] = useState<boolean>(true);
+  const [isCharacters, setIsCharacters] = useState<boolean>(false);
+  const [isCompanies, setIsCompanies] = useState<boolean>(false);
+  const [type, setType] = useState<string>("game");
 
   useEffect(() => {
-    dispatch(searchCriteriaThunk({ keyword: criteria, pageSize, pageNumber }));
-  }, [pageNumber]);
+    dispatch(searchCriteriaThunk({ type, criteria, pageSize, pageNumber }));
+  }, [pageNumber, type]);
 
-  const searchChangeHandler = (e: React.ChangeEvent<HTMLInputElement>): void =>
-    setCriteria(e.target.value);
+  const criteriaChangeHandler = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => setCriteria(e.target.value);
 
-  // const pageNumberChangeHandler = (
-  //   e: React.ChangeEvent<HTMLInputElement>
-  // ): void => {
-  //   if(typeof(e.target.value))
-  //   setPageNumber(Number(e.target.value) || pageNumber)
-  // };
   const searchSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     if (criteria === "") {
       setIsSearch(false);
@@ -39,9 +38,30 @@ const Search: React.FC<SearchProps> = ({}) => {
       return;
     }
     setIsSearch(true);
-    dispatch(searchCriteriaThunk({ keyword: criteria, pageSize, pageNumber }));
+    // gamesClickHandler();
     setPageNumber(0);
     e.preventDefault();
+  };
+
+  const gamesClickHandler = () => {
+    setIsGames(true);
+    setIsCharacters(false);
+    setIsCompanies(false);
+    setType("game");
+  };
+
+  const charactersClickHandler = () => {
+    setIsGames(false);
+    setIsCharacters(true);
+    setIsCompanies(false);
+    setType("character");
+  };
+
+  const companiesClickHandler = () => {
+    setIsGames(false);
+    setIsCharacters(false);
+    setIsCompanies(true);
+    setType("company");
   };
 
   return (
@@ -57,7 +77,7 @@ const Search: React.FC<SearchProps> = ({}) => {
               // placeholder="Search Playbook"
               placeholder="Search a game, character and much more..."
               value={criteria}
-              onChange={searchChangeHandler}
+              onChange={criteriaChangeHandler}
             />
             <button
               type="submit"
@@ -67,7 +87,34 @@ const Search: React.FC<SearchProps> = ({}) => {
         </div>
       </div>
 
-      {loading ? <LoadingSpinner />: null}
+      <div className="container d-flex justify-content-center">
+        <button
+          onClick={gamesClickHandler}
+          className={`btn btn-dark wb-rounded-border m-4 p-2 ps-4 pe-4 ${
+            isGames ? "active" : ""
+          }`}
+        >
+          Games
+        </button>
+        <button
+          onClick={charactersClickHandler}
+          className={`btn btn-dark wb-rounded-border m-4 p-2 ps-4 pe-4 ${
+            isCharacters ? "active" : ""
+          }`}
+        >
+          Characters
+        </button>
+        <button
+          onClick={companiesClickHandler}
+          className={`btn btn-dark wb-rounded-border m-4 p-2 ps-4 pe-4 ${
+            isCompanies ? "active" : ""
+          }`}
+        >
+          Companies
+        </button>
+      </div>
+
+      {searchLoading && <LoadingSpinner />}
 
       {isSearch && searchResult.length > 0 && (
         <div className="container col-12 mt-3 d-flex justify-content-center">
@@ -99,12 +146,10 @@ const Search: React.FC<SearchProps> = ({}) => {
       {isSearch && (
         <div className="row container d-flex justify-content-center">
           {searchResult.map((s: SearchResult) => (
-            <SearchItem key={s.checksum} s={s} />
+            <SearchItem key={s.checksum} s={s} type={type} />
           ))}
         </div>
       )}
-
-
     </div>
   );
 };

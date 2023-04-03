@@ -14,6 +14,7 @@ export type SearchResult = {
 };
 
 export type Game = {
+  id: number;
   age_ratings: number[];
   aggregated_rating: number;
   aggregated_rating_count: number;

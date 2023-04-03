@@ -3,30 +3,30 @@ import { findGameByIdThunk } from "../services/igdbThunks";
 import { Game } from "../types";
 
 interface ModalState {
-  game: Game | null;
+  games: Game[];
   loading: boolean;
 }
 const initialState: ModalState = {
-  game: null,
+  games: [],
   loading: false,
 };
 
-const gameSlice = createSlice({
-  name: "gameData",
+const gamesSlice = createSlice({
+  name: "gamesData",
   initialState,
   extraReducers: (builder) => {
     builder
       .addCase(findGameByIdThunk.pending, (state) => {
         state.loading = true;
-        state.game = null;
+        state.games = [];
       })
       .addCase(findGameByIdThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.game = action.payload;
+        state.games.push(action.payload);
       });
   },
 
   reducers: {},
 });
 
-export default gameSlice.reducer;
+export default gamesSlice.reducer;

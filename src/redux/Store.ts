@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import searchResultReducer from './searchResultReducer'
-import gameReducer from './gameReducer'
+import gamesReducer from './gamesReducer'
 
 export const store = configureStore({
   reducer: {
     searchData: searchResultReducer,
-    gameData: gameReducer,
+    gamesData: gamesReducer,
   },
 })
 

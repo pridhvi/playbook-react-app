@@ -1,28 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { SearchResult } from "../../types";
-import Game from "../details/Game";
+import { Game, SearchResult } from "../../types";
+import { useDispatch, useSelector } from "react-redux";
+import { findGameByIdThunk } from "../../services/igdbThunks";
+import { AppDispatch } from "../../redux/Store";
 
 interface SearchItemProps {
   s: SearchResult;
+  type: string;
 }
 
-const SearchItem: React.FC<SearchItemProps> = ({ s }) => {
-  let sId = "";
-  let itemType = "";
-  if (s.game) {
-    sId = `games/${s.game}`;
-    itemType = "Game";
-  } else if (s.platform) {
-    sId = `platforms/${s.platform}`;
-    itemType = "Platform";
-  } else if (s.character) {
-    sId = `characters/${s.character}`;
-    itemType = "Character";
-  } else if (s.collection) {
-    sId = `collections/${s.collection}`;
-    itemType = "Collection";
+const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
+// console.log("TESTTTT")
+  let id: string = "";
+  let item;
+  
+  if(type === "game") {
+    const {games, loading} = useSelector((state: any) => state.gamesData);
+    const game: Game = games.filter((g: Game) => {
+      return g.id === s.game;
+    })[0];
+    id = `games/${s.game}`;
+    item = game;
   }
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (type === "game") dispatch(findGameByIdThunk(Number(s.game)));
+  }, []);
 
   return (
     <>
@@ -34,10 +40,10 @@ const SearchItem: React.FC<SearchItemProps> = ({ s }) => {
         } 
         ${s.collection && "bg-secondary"}
       `}
-        to={`/details/${sId}`}
+        to={`/details/${id}`}
       >
-        {sId && <small className="">{itemType}</small>}
-        <h4>{s.name}</h4>
+        {id && <small className="">{type}</small>}
+        <h4>{item?.name}</h4>
       </Link>
     </>
   );
