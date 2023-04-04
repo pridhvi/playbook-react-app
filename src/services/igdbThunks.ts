@@ -2,8 +2,8 @@ import { Cover, Game, Platform, PlatformLogo, SearchResult } from "../types";
 import axios, { AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const IGDB_API_URL = "http://localhost:4000/api/igdb";
-// const IGDB_API_URL = "https://playbook-node-server.onrender.com/api/igdb";
+// export const IGDB_API_URL = "http://localhost:4000/api/igdb";
+const IGDB_API_URL = "https://playbook-node-server.onrender.com/api/igdb";
 
 export const searchCriteriaThunk = createAsyncThunk<
   SearchResult[],
@@ -38,21 +38,6 @@ export const findGameByIdThunk = createAsyncThunk(
       );
       game.cover = cover.data.url;
     }
-
-    // if (game.platforms) {
-    //   let platformsNames: string[] = []
-    //   game.platforms.map(async (platformId: number) => {
-    //     // const platformId = ;
-
-    //     const platform: AxiosResponse<Platform, any> = await axios.get(
-    //       `${IGDB_API_URL}/platforms/${platformId}`
-    //     );
-    //     // game.platform_objects.push(platform.data);
-    //     platformsNames.push(platform.data.name);
-    //   });
-    //   game.platformsNames = platformsNames;
-      
-    // }
     return game;
   }
 );
