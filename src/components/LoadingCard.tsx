@@ -5,7 +5,7 @@ const LoadingCard: React.FC = () => {
   return (
     <div className="card-body placeholder-glow">
 
-  <img src="" className="card-img-top mb-1" alt="..." />
+  <img src="/no-image.jpeg" className="card-img-top mb-1" alt="..." />
       <h5 className="card-title">
         <span className="placeholder col-6"></span>
       </h5>

@@ -7,7 +7,6 @@ import {
   findGameByIdThunk,
 } from "../../services/igdbThunks";
 import { AppDispatch } from "../../redux/Store";
-import LoadingSpinner from "../LoadingSpinner";
 import LoadingCard from "../LoadingCard";
 
 interface SearchItemProps {
@@ -71,10 +70,11 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
         <div className="card-body">
           <img
             src={
-              picture &&
+              picture ?
               `https://images.igdb.com/igdb/image/upload/t_cover_big/${
                 picture.split("/")[7]
               }`
+              : "/no-image.jpeg"
             }
             height="300px"
             // width="50px"
