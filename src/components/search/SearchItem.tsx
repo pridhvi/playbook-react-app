@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Game, SearchResult } from "../../types";
+import { Game, Platform, SearchResult } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
-import { findGameByIdThunk } from "../../services/igdbThunks";
+import { findGameByIdThunk, findPlatformByIdThunk } from "../../services/igdbThunks";
 import { AppDispatch } from "../../redux/Store";
 
 interface SearchItemProps {
@@ -11,7 +11,6 @@ interface SearchItemProps {
 }
 
 const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
-// console.log("TESTTTT")
   let id: string = "";
   let item;
   
@@ -23,11 +22,20 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
     id = `games/${s.game}`;
     item = game;
   }
+  else if(type === "platform") {
+    const {platforms, loading} = useSelector((state: any) => state.platformsData);
+    const platform: Platform = platforms.filter((p: Platform) => {
+      return p.id === s.platform;
+    })[0];
+    id = `platforms/${s.platform}`;
+    item = platform;
+  }
 
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (type === "game") dispatch(findGameByIdThunk(Number(s.game)));
+    else if (type === "platform") dispatch(findPlatformByIdThunk(Number(s.platform)));
   }, []);
 
   return (

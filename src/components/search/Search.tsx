@@ -9,15 +9,14 @@ import LoadingSpinner from "../Loading";
 interface SearchProps {}
 
 const Search: React.FC<SearchProps> = ({}) => {
-  // let isSearch = false;
   const dispatch = useDispatch<AppDispatch>();
-  const [isSearch, setIsSearch] = useState<boolean>(false);
   const [criteria, setCriteria] = useState<string>("");
   const { searchResult, loading: searchLoading } = useSelector(
     (state: any) => state.searchData
   );
-  const [pageSize, setPageSize] = useState<number>(5);
-  const [pageNumber, setPageNumber] = useState<number>(-1);
+  // const [pageSize, setPageSize] = useState<number>(5);
+  const pageSize: number = 5;
+  const [pageNumber, setPageNumber] = useState<number>(0);
   const [isGames, setIsGames] = useState<boolean>(true);
   const [isCharacters, setIsCharacters] = useState<boolean>(false);
   const [isCompanies, setIsCompanies] = useState<boolean>(false);
@@ -33,12 +32,13 @@ const Search: React.FC<SearchProps> = ({}) => {
 
   const searchSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     if (criteria === "") {
-      setIsSearch(false);
       e.preventDefault();
       return;
     }
-    setIsSearch(true);
-    // gamesClickHandler();
+
+    if (pageNumber === 0)
+      dispatch(searchCriteriaThunk({ type, criteria, pageSize, pageNumber }));
+    gamesClickHandler();
     setPageNumber(0);
     e.preventDefault();
   };
@@ -66,6 +66,7 @@ const Search: React.FC<SearchProps> = ({}) => {
 
   return (
     <div className="row container m-auto">
+      {/* Search Bar */}
       <div className="col-12">
         <div className="container p-0 col-10 col-lg-7 col-xl-5 m-auto rounded-pill bg-black d-flex align-items-center border">
           {/* <i className="bi bi-search text-white d-inline position-absolute ms-3"></i> */}
@@ -87,6 +88,7 @@ const Search: React.FC<SearchProps> = ({}) => {
         </div>
       </div>
 
+      {/* Buttons to navigate between types of search result */}
       <div className="container d-flex justify-content-center">
         <button
           onClick={gamesClickHandler}
@@ -116,7 +118,8 @@ const Search: React.FC<SearchProps> = ({}) => {
 
       {searchLoading && <LoadingSpinner />}
 
-      {isSearch && searchResult.length > 0 && (
+      {/* Page navigation buttons */}
+      {searchResult && searchResult.length > 0 && (
         <div className="container col-12 mt-3 d-flex justify-content-center">
           <button
             disabled={pageNumber === 0 ? true : false}
@@ -143,10 +146,11 @@ const Search: React.FC<SearchProps> = ({}) => {
         </div>
       )}
 
-      {isSearch && (
+      {/* Iterating through search result */}
+      {searchResult && (
         <div className="row container d-flex justify-content-center">
           {searchResult.map((s: SearchResult) => (
-            <SearchItem key={s.checksum} s={s} type={type} />
+            <SearchItem key={s.id} s={s} type={type} />
           ))}
         </div>
       )}

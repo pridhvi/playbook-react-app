@@ -1,4 +1,5 @@
 export type SearchResult = {
+  id: number;
   alternative_name: string;
   character: number;
   checksum: number;
@@ -47,6 +48,7 @@ export type Game = {
   name: string;
   parent_game: number;
   platforms: number[];
+  platformsNames: string;
   player_perspectives: number[];
   ports: number[];
   rating: number;
@@ -77,4 +79,29 @@ export type Cover = {
   url: string;
   height: number;
   width: number;
-}
+};
+
+export type Platform = {
+  id: number;
+  abbreviation: string;
+  alternative_name: string;
+  // category	Category Enum	A physical or virtual category of the platform
+  checksum: number;
+  created_at: number;
+  generation: number;
+  name: string;
+  platform_family: number;
+  platform_logo: string;
+  slug: string;
+  summary: string;
+  updated_at: number;
+  url: string;
+  versions: number[];
+  websites: number[];
+};
+
+export type PlatformLogo = {
+  url: string;
+  height: number;
+  width: number;
+};
