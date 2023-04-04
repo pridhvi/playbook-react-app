@@ -24,14 +24,15 @@ body {
 }
 
 .wb-search-item {
-    background-color: rgb(103, 51, 30);
-    opacity: 0.8 !important;
+    background-color: rgb(50, 50, 50, 0.5);
+    /* opacity: 0.8 !important; */
     /* #67331e; */
 }
 
 .wb-search-item:hover {
+    background-color: rgb(50, 50, 50, 0.8);
     /* background-color: rgb(103, 51, 30, 1); */
-    opacity: 1 !important;
+    /* opacity: 1 !important; */
     /* #67331e; */
 }
 

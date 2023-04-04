@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import {
-  IGDB_API_URL,
   findGameByIdThunk,
   findPlatformByIdThunk,
 } from "../../services/igdbThunks";
