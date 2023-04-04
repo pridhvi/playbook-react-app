@@ -1,4 +1,4 @@
-import { Cover, Game, Platform, PlatformLogo, SearchResult } from "../types";
+import { Character, Picture, Game, Platform, PlatformLogo, SearchResult } from "../types";
 import axios, { AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -33,12 +33,32 @@ export const findGameByIdThunk = createAsyncThunk(
     if (game.cover) {
       const coverId = Number(game.cover);
 
-      const cover: AxiosResponse<Cover, any> = await axios.get(
+      const cover: AxiosResponse<Picture, any> = await axios.get(
         `${IGDB_API_URL}/covers/${coverId}`
       );
       game.cover = cover.data.url;
     }
     return game;
+  }
+);
+
+export const findCharacterByIdThunk = createAsyncThunk(
+  "character/findCharacterById",
+  async (id: number) => {
+    const characterData: AxiosResponse<Character[], any> = await axios.get(
+      `${IGDB_API_URL}/characters/${id}`
+    );
+    const character: Character = characterData.data[0];
+    // fetch the Mugshot image of the character
+    if (character.mug_shot) {
+      const characterMugShotId = Number(character.mug_shot);
+
+      const mug_shot: AxiosResponse<Picture, any> = await axios.get(
+        `${IGDB_API_URL}/character_mug_shots/${characterMugShotId}`
+      );
+      character.mug_shot = mug_shot.data.url;
+    }
+    return character;
   }
 );
 

@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Game, Platform, SearchResult } from "../../types";
+import { Character, Game, SearchResult } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  findCharacterByIdThunk,
   findGameByIdThunk,
-  findPlatformByIdThunk,
 } from "../../services/igdbThunks";
 import { AppDispatch } from "../../redux/Store";
+import LoadingSpinner from "../LoadingSpinner";
+import LoadingCard from "../LoadingCard";
 
 interface SearchItemProps {
   s: SearchResult;
@@ -15,7 +17,9 @@ interface SearchItemProps {
 
 const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
   let id: string = "";
-  let item;
+  let item,
+    isLoading = true,
+    picture = "", description = "";
 
   if (type === "game") {
     const { games, loading } = useSelector((state: any) => state.gamesData);
@@ -24,6 +28,21 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
     })[0];
     id = `games/${s.game}`;
     item = game;
+    if (game?.cover) picture = game?.cover;
+    if (game?.summary) description = game?.summary;
+    isLoading = loading;
+  } else if (type === "character") {
+    const { characters, loading } = useSelector(
+      (state: any) => state.charactersData
+    );
+    const character: Character = characters.filter((c: Character) => {
+      return c.id === s.character;
+    })[0];
+    id = `characters/${s.character}`;
+    item = character;
+    if (character?.mug_shot) picture = character?.mug_shot;
+    if (character?.description) description = character?.description;
+    isLoading = loading;
   }
   // else if (type === "platform") {
   //   const { platforms, loading } = useSelector(
@@ -39,38 +58,40 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    if (type === "game") dispatch(findGameByIdThunk(Number(s.game)));
-    // else if (type === "platform")
-    //   dispatch(findPlatformByIdThunk(Number(s.platform)));
+    if (type === "game") dispatch(findGameByIdThunk(s.game));
+    else if (type === "character")
+      dispatch(findCharacterByIdThunk(s.character));
   }, []);
 
   return (
-    <div className="card col-5 col-sm-4 col-lg-3 col-xxl-2 wb-search-item m-1 m-lg-3 p-1 p-md-2">
-      {/* {item?.cover && ( */}
-      <img
-        src={
-          item?.cover &&
-          `https://images.igdb.com/igdb/image/upload/t_cover_big/${
-            item?.cover.split("/")[7]
-          }`
-        }
-        height="300px"
-        // width="50px"
-        className="card-img-top"
-        // alt="game cover"
-      />
-      {/* )} */}
-      <div className="card-body">
-        <h5 className="card-title">{item?.name}</h5>
-        {/* <p className="card-text text-truncate overflow-scroll">{item?.storyline}</p> */}
-        <Link
-          target="_blank"
-          to={`/details/${id}`}
-          className="btn btn-secondary text-white"
-        >
-          Details
-        </Link>
-      </div>
+    <div className="card col-5 col-sm-4 col-lg-3 col-xxl-2 wb-search-item m-1 m-lg-3 p-1">
+      {isLoading && <LoadingCard />}
+
+      {!isLoading && (
+        <div className="card-body">
+          <img
+            src={
+              picture &&
+              `https://images.igdb.com/igdb/image/upload/t_cover_big/${
+                picture.split("/")[7]
+              }`
+            }
+            height="300px"
+            // width="50px"
+            className="card-img-top mb-2"
+            alt="cover"
+          />
+          <h6 className="card-title fw-bold">{item?.name}</h6>
+          <p className="card-text fw-light fst-italic overflow-scroll" style={{height: "50px"}}>{description}</p>
+          <Link
+            target="_blank"
+            to={`/details/${id}`}
+            className="btn btn-secondary text-white"
+          >
+            Details
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

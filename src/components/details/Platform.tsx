@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { findGameByIdThunk, findPlatformByIdThunk } from "../../services/igdbThunks";
 import { AppDispatch } from "../../redux/Store";
-import LoadingSpinner from "../Loading";
+import LoadingSpinner from "../LoadingSpinner";
 import { Platform } from "../../types";
 
 interface PlatformComponentProps {}

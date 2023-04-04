@@ -4,7 +4,7 @@ import { searchCriteriaThunk } from "../../services/igdbThunks";
 import { SearchResult } from "../../types";
 import { AppDispatch } from "../../redux/Store";
 import SearchItem from "./SearchItem";
-import LoadingSpinner from "../Loading";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface SearchProps {}
 
@@ -15,7 +15,7 @@ const Search: React.FC<SearchProps> = ({}) => {
     (state: any) => state.searchData
   );
   // const [pageSize, setPageSize] = useState<number>(5);
-  const pageSize: number = 20;
+  const pageSize: number = 10;
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [isGames, setIsGames] = useState<boolean>(true);
   const [isCharacters, setIsCharacters] = useState<boolean>(false);
@@ -109,7 +109,6 @@ const Search: React.FC<SearchProps> = ({}) => {
               className={`btn btn-dark wb-rounded-border m-1 m-md-4 p-md-2 ps-md-4 pe-md-4 ${
                 isCharacters ? "active" : ""
               }`}
-              disabled
             >
               Characters
             </button>

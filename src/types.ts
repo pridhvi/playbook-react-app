@@ -75,10 +75,28 @@ export type Game = {
   websites: number[];
 };
 
-export type Cover = {
+// Cover, Mugshot
+export type Picture = {
   url: string;
   height: number;
   width: number;
+};
+
+export type Character = {
+  id: number;
+  akas: string[];
+  checksum: number;
+  country_name: string;
+  created_at: number;
+  description: string;
+  games: number[];
+  gender: number;
+  mug_shot: string;
+  name: string;
+  slug: string;
+  species: number;
+  updated_at: number;
+  url: string;
 };
 
 export type Platform = {
