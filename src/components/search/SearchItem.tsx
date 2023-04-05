@@ -18,7 +18,8 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
   let id: string = "";
   let item,
     isLoading = true,
-    picture = "", description = "";
+    picture = "",
+    description = "";
 
   if (type === "game") {
     const { games, loading } = useSelector((state: any) => state.gamesData);
@@ -57,24 +58,24 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    if (type === "game") dispatch(findGameByIdThunk(s.game));
-    else if (type === "character")
+    if (type === "game" && s.game) dispatch(findGameByIdThunk(s.game));
+    else if (type === "character" && s.character)
       dispatch(findCharacterByIdThunk(s.character));
   }, []);
 
   return (
     <div className="card col-5 col-sm-4 col-lg-3 col-xxl-2 wb-search-item m-1 m-lg-3 p-1">
-      {isLoading && <LoadingCard />}
-
-      {!isLoading && (
+      {isLoading ? (
+        <LoadingCard />
+      ) : (
         <div className="card-body">
           <img
             src={
-              picture ?
-              `https://images.igdb.com/igdb/image/upload/t_cover_big/${
-                picture.split("/")[7]
-              }`
-              : "/no-image.jpeg"
+              picture
+                ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${
+                    picture.split("/")[7]
+                  }`
+                : "/no-image.jpeg"
             }
             height="300px"
             // width="50px"
@@ -82,7 +83,12 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
             alt="cover"
           />
           <h6 className="card-title fw-bold">{item?.name}</h6>
-          <p className="card-text fw-light fst-italic overflow-scroll" style={{height: "50px"}}>{description}</p>
+          <p
+            className="card-text fw-light fst-italic overflow-scroll"
+            style={{ height: "50px" }}
+          >
+            {description}
+          </p>
           <Link
             target="_blank"
             to={`/details/${id}`}

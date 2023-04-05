@@ -43,7 +43,6 @@ const Search: React.FC<SearchProps> = ({}) => {
     if (pageNumber === 0)
       dispatch(searchCriteriaThunk({ type, criteria, pageSize, pageNumber }));
     gamesClickHandler();
-    setPageNumber(0);
     e.preventDefault();
   };
 
@@ -52,6 +51,7 @@ const Search: React.FC<SearchProps> = ({}) => {
     setIsCharacters(false);
     setIsCompanies(false);
     setType("game");
+    setPageNumber(0);
   };
 
   const charactersClickHandler = () => {
@@ -59,6 +59,7 @@ const Search: React.FC<SearchProps> = ({}) => {
     setIsCharacters(true);
     setIsCompanies(false);
     setType("character");
+    setPageNumber(0);
   };
 
   const companiesClickHandler = () => {
@@ -66,6 +67,7 @@ const Search: React.FC<SearchProps> = ({}) => {
     setIsCharacters(false);
     setIsCompanies(true);
     setType("company");
+    setPageNumber(0);
   };
 
   return (
