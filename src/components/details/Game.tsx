@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
-import {
-  findGameByIdThunk,
-  findPlatformByIdThunk,
-} from "../../services/igdbThunks";
+import { findGameByIdThunk } from "../../services/igdbThunks";
 import { AppDispatch } from "../../redux/Store";
 import LoadingSpinner from "../LoadingSpinner";
 import { Game, Platform } from "../../types";
@@ -16,15 +13,9 @@ const GameComponent: React.FC<GameProps> = ({}) => {
   const gameId: number = Number(pathname.split("/")[3]);
   const { games, loading } = useSelector((state: any) => state.gamesData);
   const [game, setGame] = useState<Game>();
-  const { platforms, loading: platformsLoading } = useSelector(
-    (state: any) => state.platformsData
-  );
 
   const dispatch = useDispatch<AppDispatch>();
-
-  //   useEffect(() => {
-  //   }, [platforms]);
-
+  
   useEffect(() => {
     dispatch(findGameByIdThunk(gameId));
   }, []);
@@ -35,12 +26,6 @@ const GameComponent: React.FC<GameProps> = ({}) => {
         return g.id === gameId;
       })[0]
     );
-
-    if (game?.platforms) {
-      game?.platforms.map((p: number) => {
-        dispatch(findPlatformByIdThunk(p));
-      });
-    }
   }, [games]);
 
   return (
@@ -59,10 +44,12 @@ const GameComponent: React.FC<GameProps> = ({}) => {
             />
           )}
 
-          <h3 className="">Platforms: </h3>
-          {platforms.map((p: Platform) => (
-            <p>{p.name}</p>
-          ))}
+          {game.platformsNames ? (
+            <>
+              <h3 className="">Platforms: </h3>
+              <p>{game.platformsNames}</p>
+            </>
+          ) : null}
           {game.storyline ? (
             <>
               <h3>Storyline: </h3>

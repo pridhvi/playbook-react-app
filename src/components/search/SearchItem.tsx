@@ -44,16 +44,6 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
     if (character?.description) description = character?.description;
     isLoading = loading;
   }
-  // else if (type === "platform") {
-  //   const { platforms, loading } = useSelector(
-  //     (state: any) => state.platformsData
-  //   );
-  //   const platform: Platform = platforms.filter((p: Platform) => {
-  //     return p.id === s.platform;
-  //   })[0];
-  //   id = `platforms/${s.platform}`;
-  //   item = platform;
-  // }
 
   const dispatch = useDispatch<AppDispatch>();
 

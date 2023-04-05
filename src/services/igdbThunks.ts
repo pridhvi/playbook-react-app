@@ -1,4 +1,9 @@
-import { Character, Picture, Game, Platform, PlatformLogo, SearchResult } from "../types";
+import {
+  Character,
+  Picture,
+  Game,
+  SearchResult,
+} from "../types";
 import axios, { AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -13,14 +18,17 @@ export const searchCriteriaThunk = createAsyncThunk<
     pageSize: number;
     pageNumber: number;
   }
->("search/getSearchCriteria", async ({ type, criteria, pageSize, pageNumber }) => {
-  // calculate the element to start with for the next page
-  pageNumber = pageSize * pageNumber + 1;
-  const searchResult: AxiosResponse<SearchResult[], any> = await axios.get(
-    `${IGDB_API_URL}/search?type=${type}&criteria=${criteria}&pageSize=${pageSize}&pageNumber=${pageNumber}`
-  );
-  return searchResult.data as SearchResult[];
-});
+>(
+  "search/getSearchCriteria",
+  async ({ type, criteria, pageSize, pageNumber }) => {
+    // calculate the element to start with for the next page
+    pageNumber = pageSize * pageNumber + 1;
+    const searchResult: AxiosResponse<SearchResult[], any> = await axios.get(
+      `${IGDB_API_URL}/search?type=${type}&criteria=${criteria}&pageSize=${pageSize}&pageNumber=${pageNumber}`
+    );
+    return searchResult.data as SearchResult[];
+  }
+);
 
 export const findGameByIdThunk = createAsyncThunk(
   "game/findGameById",
@@ -28,7 +36,8 @@ export const findGameByIdThunk = createAsyncThunk(
     const gameData: AxiosResponse<Game[], any> = await axios.get(
       `${IGDB_API_URL}/games/${id}`
     );
-    const game: Game = gameData.data[0];
+    // let game: Game = JSON.parse(JSON.stringify(gameData.data[0]));
+    let game: Game = { ...gameData.data[0], platformsNames: "" };
     // fetch the cover image of the game
     if (game.cover) {
       const coverId = Number(game.cover);
@@ -38,6 +47,22 @@ export const findGameByIdThunk = createAsyncThunk(
       );
       game.cover = cover.data.url;
     }
+    // fetch the platforms of the game
+    if (game.platforms) {
+      let platformsNames = "";
+      await Promise.all(
+        game.platforms.map((platformId) => {
+          return axios.get(`${IGDB_API_URL}/platforms/${platformId}`);
+        })
+      ).then((platformData) => {
+        platformData.map((p) => {
+          platformsNames = platformsNames + ", " + p.data[0].name;
+        });
+      });
+
+      game = { ...game, platformsNames: platformsNames.substring(2) };
+    }
+
     return game;
   }
 );
@@ -62,24 +87,24 @@ export const findCharacterByIdThunk = createAsyncThunk(
   }
 );
 
-export const findPlatformByIdThunk = createAsyncThunk(
-  "platforms/findPlatformById",
-  async (id: number) => {
-    const platformData: AxiosResponse<Platform[], any> = await axios.get(
-      `${IGDB_API_URL}/platforms/${id}`
-    );
-    const platform: Platform = platformData.data[0];
-    if (platform.platform_logo) {
-      const platformLogoId = Number(platform.platform_logo);
+// export const findPlatformByIdThunk = createAsyncThunk(
+//   "platforms/findPlatformById",
+//   async (id: number) => {
+//     const platformData: AxiosResponse<Platform[], any> = await axios.get(
+//       `${IGDB_API_URL}/platforms/${id}`
+//     );
+//     const platform: Platform = platformData.data[0];
+//     if (platform.platform_logo) {
+//       const platformLogoId = Number(platform.platform_logo);
 
-      const platformLogo: AxiosResponse<PlatformLogo, any> = await axios.get(
-        `${IGDB_API_URL}/platform_logos/${platformLogoId}`
-      );
-      platform.platform_logo = platformLogo.data.url;
-    }
-    return platform;
-  }
-);
+//       const platformLogo: AxiosResponse<PlatformLogo, any> = await axios.get(
+//         `${IGDB_API_URL}/platform_logos/${platformLogoId}`
+//       );
+//       platform.platform_logo = platformLogo.data.url;
+//     }
+//     return platform;
+//   }
+// );
 
 // export const findCoverByIdThunk = createAsyncThunk(
 //   "cover/findCoverById",
