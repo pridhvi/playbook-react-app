@@ -55,7 +55,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
           {character.mug_shot && (
             <img
               src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${
-                character.mug_shot.split("/")[7]
+                character.mug_shot.url.split("/")[7]
               }`}
               height="250px"
               alt="cover"

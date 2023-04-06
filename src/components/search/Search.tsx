@@ -15,7 +15,7 @@ const Search: React.FC<SearchProps> = ({}) => {
     (state: any) => state.searchData
   );
   // const [pageSize, setPageSize] = useState<number>(5);
-  const pageSize: number = 10;
+  const pageSize: number = 20;
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [isGames, setIsGames] = useState<boolean>(true);
   const [isCharacters, setIsCharacters] = useState<boolean>(false);

@@ -1,12 +1,12 @@
 export type SearchResult = {
   id: number;
   alternative_name: string;
-  character: number;
+  character: Character;
   checksum: number;
   collection: number;
   company: number;
   description: string;
-  game: number;
+  game: Game;
   name: string;
   platform: number;
   published_at: number;
@@ -21,11 +21,12 @@ export type Game = {
   aggregated_rating_count: number;
   alternative_names: number[];
   artworks: number[];
+  artworkUrls: string[];
   bundles: number[];
   // category	Category Enum;
   checksum: number;
   collection: number;
-  cover: string;
+  cover: Picture;
   created_at: number;
   dlcs: number[];
   expanded_games: number[];
@@ -75,13 +76,6 @@ export type Game = {
   websites: number[];
 };
 
-// Cover, Mugshot
-export type Picture = {
-  url: string;
-  height: number;
-  width: number;
-};
-
 export type Character = {
   id: number;
   akas: string[];
@@ -91,7 +85,7 @@ export type Character = {
   description: string;
   games: number[];
   gender: number;
-  mug_shot: string;
+  mug_shot: Picture;
   name: string;
   slug: string;
   species: number;
@@ -99,27 +93,36 @@ export type Character = {
   url: string;
 };
 
-export type Platform = {
-  id: number;
-  abbreviation: string;
-  alternative_name: string;
-  // category	Category Enum	A physical or virtual category of the platform
-  checksum: number;
-  created_at: number;
-  generation: number;
-  name: string;
-  platform_family: number;
-  platform_logo: string;
-  slug: string;
-  summary: string;
-  updated_at: number;
-  url: string;
-  versions: number[];
-  websites: number[];
-};
-
-export type PlatformLogo = {
+// Cover, Mugshot
+export type Picture = {
   url: string;
   height: number;
   width: number;
 };
+
+
+
+// export type Platform = {
+//   id: number;
+//   abbreviation: string;
+//   alternative_name: string;
+//   // category	Category Enum	A physical or virtual category of the platform
+//   checksum: number;
+//   created_at: number;
+//   generation: number;
+//   name: string;
+//   platform_family: number;
+//   platform_logo: string;
+//   slug: string;
+//   summary: string;
+//   updated_at: number;
+//   url: string;
+//   versions: number[];
+//   websites: number[];
+// };
+
+// export type PlatformLogo = {
+//   url: string;
+//   height: number;
+//   width: number;
+// };

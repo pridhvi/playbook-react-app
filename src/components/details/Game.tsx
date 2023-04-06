@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { findGameByIdThunk } from "../../services/igdbThunks";
 import { AppDispatch } from "../../redux/Store";
 import LoadingSpinner from "../LoadingSpinner";
-import { Game, Platform } from "../../types";
+import { Game } from "../../types";
 
 interface GameProps {}
 
@@ -37,7 +37,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
           {game.cover && (
             <img
               src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${
-                game.cover.split("/")[7]
+                game.cover.url.split("/")[7]
               }`}
               height="250px"
               alt="cover"

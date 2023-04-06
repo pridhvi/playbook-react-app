@@ -16,6 +16,14 @@ const gamesSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+      // .addCase(findGameByIdForSearchThunk.pending, (state) => {
+      //   state.loading = true;
+      //   state.games = [];
+      // })
+      // .addCase(findGameByIdForSearchThunk.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.games.push(action.payload);
+      // })
       .addCase(findGameByIdThunk.pending, (state) => {
         state.loading = true;
         state.games = [];
