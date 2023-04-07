@@ -1,61 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
-import {
-  findCharacterByIdThunk,
-  findGameByIdThunk,
-} from "../../services/igdbThunks";
-import { AppDispatch } from "../../redux/Store";
-import LoadingSpinner from "../LoadingSpinner";
 import { Character, Game } from "../../types";
-import SearchItem from "../search/SearchItem";
+import { findCharacterById } from "../../services/igdbServices";
 
 interface CharacterProps {}
 
 const CharacterComponent: React.FC<CharacterProps> = ({}) => {
   const { pathname } = useLocation();
   const characterId: number = Number(pathname.split("/")[3]);
-  const { characters, loading } = useSelector(
-    (state: any) => state.charactersData
-  );
   const [character, setCharacter] = useState<Character>();
-  const { games, loading: gamesLoading } = useSelector(
-    (state: any) => state.gamesData
-  );
-
-  const dispatch = useDispatch<AppDispatch>();
-  // useEffect(() => {
-  //   console.log("TEST")
-  // }, [games]);
 
   useEffect(() => {
-    dispatch(findCharacterByIdThunk(characterId));
+    fetchCharacter();
   }, []);
-
-  useEffect(() => {
-    setCharacter(
-      characters.filter((c: Character) => {
-        return c.id === characterId;
-      })[0]
-    );
-
-    if (character?.games) {
-      character?.games.map((g: number) => {
-        dispatch(findGameByIdThunk(g));
-      });
-    }
-  }, [characters]);
+  const fetchCharacter = async () => {
+    setCharacter(await findCharacterById(characterId));
+  };
 
   return (
     <div className="container">
-      {loading ? <LoadingSpinner /> : null}
+      {/* {loading ? <LoadingSpinner /> : null} */}
       {character ? (
         <>
           <h1>{character.name}</h1>
           {character.mug_shot && (
             <img
               src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${
-                character.mug_shot.url.split("/")[7]
+                character.mug_shot?.url.split("/")[7]
               }`}
               height="250px"
               alt="cover"
@@ -63,7 +34,9 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
           )}
 
           <h3 className="">Games: </h3>
-          {games.map((g: Game) => <p key={g.id}>{g.name}</p>)}
+          {character.games.map((g: Game) => (
+            <p key={g.id}>{g.name}</p>
+          ))}
           {character.description ? (
             <>
               <h3>Description: </h3>

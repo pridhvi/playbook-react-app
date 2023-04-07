@@ -48,7 +48,7 @@ export type Game = {
   multiplayer_modes: number[];
   name: string;
   parent_game: number;
-  platforms: number[];
+  platforms: Platform[];
   platformsNames: string;
   player_perspectives: number[];
   ports: number[];
@@ -83,7 +83,7 @@ export type Character = {
   country_name: string;
   created_at: number;
   description: string;
-  games: number[];
+  games: Game[];
   gender: number;
   mug_shot: Picture;
   name: string;
@@ -102,24 +102,24 @@ export type Picture = {
 
 
 
-// export type Platform = {
-//   id: number;
-//   abbreviation: string;
-//   alternative_name: string;
-//   // category	Category Enum	A physical or virtual category of the platform
-//   checksum: number;
-//   created_at: number;
-//   generation: number;
-//   name: string;
-//   platform_family: number;
-//   platform_logo: string;
-//   slug: string;
-//   summary: string;
-//   updated_at: number;
-//   url: string;
-//   versions: number[];
-//   websites: number[];
-// };
+export type Platform = {
+  id: number;
+  abbreviation: string;
+  alternative_name: string;
+  // category	Category Enum	A physical or virtual category of the platform
+  checksum: number;
+  created_at: number;
+  generation: number;
+  name: string;
+  platform_family: number;
+  platform_logo: string;
+  slug: string;
+  summary: string;
+  updated_at: number;
+  url: string;
+  versions: number[];
+  websites: number[];
+};
 
 // export type PlatformLogo = {
 //   url: string;

@@ -18,7 +18,6 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
     if (s.game.summary) description = s.game.summary;
   } else if (type === "character" && s.character) {
     id = `characters/${s.character.id}`;
-    console.log(s.character?.mug_shot);
     if (s.character.mug_shot?.url) picture = s.character?.mug_shot.url;
     if (s.character.description) description = s.character.description;
   }

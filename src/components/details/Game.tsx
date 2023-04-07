@@ -5,39 +5,44 @@ import { findGameByIdThunk } from "../../services/igdbThunks";
 import { AppDispatch } from "../../redux/Store";
 import LoadingSpinner from "../LoadingSpinner";
 import { Game } from "../../types";
+import { findGameById } from "../../services/igdbServices";
 
 interface GameProps {}
 
 const GameComponent: React.FC<GameProps> = ({}) => {
   const { pathname } = useLocation();
   const gameId: number = Number(pathname.split("/")[3]);
-  const { games, loading } = useSelector((state: any) => state.gamesData);
   const [game, setGame] = useState<Game>();
 
-  const dispatch = useDispatch<AppDispatch>();
-  
   useEffect(() => {
-    dispatch(findGameByIdThunk(gameId));
+    fetchGame();
   }, []);
 
-  useEffect(() => {
-    setGame(
-      games.filter((g: Game) => {
-        return g.id === gameId;
-      })[0]
-    );
-  }, [games]);
+//   useEffect(() => {
+//     if (game?.platforms) {
+//         let platformsNames = "";
+//         game.platforms.map((p) => {
+//           platformsNames = platformsNames + ", " + p.name;
+//         });
+    
+//         setGame({ ...game, platformsNames: platformsNames.substring(2) });
+//       }
+//   }, [game])
+
+  const fetchGame = async () => {
+    setGame(await findGameById(gameId));
+  };
 
   return (
     <div className="container">
-      {loading ? <LoadingSpinner /> : null}
+      {/* {loading ? <LoadingSpinner /> : null} */}
       {game ? (
         <>
           <h1>{game.name}</h1>
           {game.cover && (
             <img
               src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${
-                game.cover.url.split("/")[7]
+                game.cover?.url.split("/")[7]
               }`}
               height="250px"
               alt="cover"
