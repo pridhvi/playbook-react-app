@@ -11,11 +11,11 @@ interface LoginProps {}
 const Login: React.FC<LoginProps> = ({}) => {
   const [active, setActive] = useState<string>("login");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [firstName, setFirstName] = useState<string>("Pridhvi");
-  const [lastName, setLastName] = useState<string>("Muthuraju");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("123");
-  const [confirmPassword, setConfirmPassword] = useState<string>("123");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [signupError, setSignupError] = useState<string>("");
   const [loginError, setLoginError] = useState<string>("");
   const [isUniqueUsername, setIsUniqueUsername] = useState<boolean>(true);
