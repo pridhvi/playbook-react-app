@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { Character, Game } from "../types";
 
 // export const IGDB_API_URL = "http://localhost:4000/api/igdb";
-const IGDB_API_URL = "https://playbook-node-server.onrender.com/api/igdb";
+export const IGDB_API_URL = "https://playbook-node-server.onrender.com/api/igdb";
 
 export const findGameById = async (id: number) => {
   const gameData: AxiosResponse<Game[], any> = await axios.get(
