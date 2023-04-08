@@ -1,34 +1,77 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import * as service from "../../services/usersServices";
+import { User } from "../../types";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../redux/Store";
+import { loginThunk, signupThunk } from "../../services/usersThunks";
 
 interface LoginProps {}
 
 const Login: React.FC<LoginProps> = ({}) => {
   const [active, setActive] = useState<string>("login");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("Pridhvi");
+  const [lastName, setLastName] = useState<string>("Muthuraju");
   const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [password, setPassword] = useState<string>("123");
+  const [confirmPassword, setConfirmPassword] = useState<string>("123");
+  const [signupError, setSignupError] = useState<string>("");
+  const [loginError, setLoginError] = useState<string>("");
+  const [isUniqueUsername, setIsUniqueUsername] = useState<boolean>(true);
+  const { currentUser, error } = useSelector(
+    (state: any) => state.currentUserData
+  );
+  // const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const firstNameChangeHandler = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => setFirstName(e.target.value);
-  const lastNameChangeHandler = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => setLastName(e.target.value);
-  const usernameChangeHandler = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    setUsername(e.target.value);
-    // Check if username is unique
-  };
+  // if (currentUser.username !== "" && error === "") navigate("/");
+
   const passwordChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => setPassword(e.target.value);
   const confirmPasswordChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => setConfirmPassword(e.target.value);
+
+  const signupSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newUser: User = {
+      username,
+      password,
+      firstName,
+      lastName,
+      // dob: undefined,
+      // createdAt: undefined,
+      // isAdmin: false,
+      role: "user",
+    };
+    dispatch(signupThunk(newUser));
+  };
+
+  const loginSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const loginUser = {
+      username,
+      password,
+    };
+    dispatch(loginThunk(loginUser));
+  };
+
+  useEffect(() => {
+    if (active === "signup") setSignupError(error);
+    else if (active === "login") setLoginError(error);
+  }, [error]);
+
+  useEffect(() => {
+    // Check if username is unique
+    if (active === "signup")
+      service
+        .findUserByUsername(username)
+        .then(() => setIsUniqueUsername(false))
+        .catch(() => setIsUniqueUsername(true));
+  }, [username]);
 
   return (
     <div className="row container m-auto">
@@ -54,16 +97,17 @@ const Login: React.FC<LoginProps> = ({}) => {
 
         {active === "login" && (
           <div className="container">
-            <form>
+            <small className="text-danger">{loginError}</small>
+            <form onSubmit={loginSubmitHandler}>
               <div className="form-group mt-3 mb-3">
                 <label htmlFor="usernameInput">Username</label>
                 <input
                   value={username}
-                  onChange={usernameChangeHandler}
-                  type="email"
+                  onChange={(e) => setUsername(e.target.value)}
+                  type="username"
                   className="form-control"
                   id="usernameInput"
-                  aria-describedby="emailHelp"
+                  aria-describedby="usernameHelp"
                   placeholder="Enter username"
                 />
               </div>
@@ -93,13 +137,16 @@ const Login: React.FC<LoginProps> = ({}) => {
 
         {active === "signup" && (
           <div className="container">
-            <form>
+            <small className="text-danger">{signupError}</small>
+            <form onSubmit={signupSubmitHandler}>
               <div className="form-group mt-3 mb-3">
                 <label htmlFor="firstNameInput">First Name</label>
                 <input
                   value={firstName}
-                  onChange={firstNameChangeHandler}
-                  type="email"
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                  }}
+                  type="firstName"
                   className="form-control"
                   id="firstNameInput"
                   placeholder="Enter First Name"
@@ -110,8 +157,10 @@ const Login: React.FC<LoginProps> = ({}) => {
                 <label htmlFor="lastNameInput">Last Name</label>
                 <input
                   value={lastName}
-                  onChange={lastNameChangeHandler}
-                  type="email"
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                  }}
+                  type="lastName"
                   className="form-control"
                   id="lastNameInput"
                   placeholder="Enter Last Name"
@@ -122,15 +171,16 @@ const Login: React.FC<LoginProps> = ({}) => {
                 <label htmlFor="usernameInput">Username</label>
                 <input
                   value={username}
-                  onChange={usernameChangeHandler}
-                  type="email"
+                  onChange={(e) => setUsername(e.target.value)}
+                  type="username"
                   className="form-control"
                   id="usernameInput"
                   aria-describedby="usernameHelp"
                   placeholder="Enter username"
                 />
-                <small id="usernameHelp" className="form-text text-muted">
-                  Choose a unique username
+                <small id="usernameHelp" className="form-text text-danger">
+                  {!isUniqueUsername &&
+                    "Username already exists! Please select a different one."}
                 </small>
               </div>
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { Character, Game } from "../../types";
 import { findCharacterById } from "../../services/igdbServices";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface CharacterProps {}
 
@@ -19,7 +20,6 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
 
   return (
     <div className="container">
-      {/* {loading ? <LoadingSpinner /> : null} */}
       {character ? (
         <>
           <h1>{character.name}</h1>
@@ -50,7 +50,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
             </>
           ) : null}
         </>
-      ) : null}
+      ) : <LoadingSpinner />}
     </div>
   );
 };

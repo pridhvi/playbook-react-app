@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
-import { findGameByIdThunk } from "../../services/igdbThunks";
-import { AppDispatch } from "../../redux/Store";
 import LoadingSpinner from "../LoadingSpinner";
 import { Game } from "../../types";
 import { findGameById } from "../../services/igdbServices";
@@ -18,24 +15,12 @@ const GameComponent: React.FC<GameProps> = ({}) => {
     fetchGame();
   }, []);
 
-//   useEffect(() => {
-//     if (game?.platforms) {
-//         let platformsNames = "";
-//         game.platforms.map((p) => {
-//           platformsNames = platformsNames + ", " + p.name;
-//         });
-    
-//         setGame({ ...game, platformsNames: platformsNames.substring(2) });
-//       }
-//   }, [game])
-
   const fetchGame = async () => {
     setGame(await findGameById(gameId));
   };
 
   return (
     <div className="container">
-      {/* {loading ? <LoadingSpinner /> : null} */}
       {game ? (
         <>
           <h1>{game.name}</h1>
@@ -68,7 +53,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
             </>
           ) : null}
         </>
-      ) : null}
+      ) : <LoadingSpinner />}
     </div>
   );
 };

@@ -1,11 +1,26 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { logoutThunk } from "../services/usersThunks";
+import { AppDispatch } from "../redux/Store";
 
 interface NavigationBarProps {}
 
 const NavigationBar: React.FC<NavigationBarProps> = ({}) => {
   const { pathname } = useLocation();
   const active: string = pathname.split("/")[1];
+  const { currentUser, error } = useSelector(
+    (state: any) => state.currentUserData
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
+  const logouthandler = () => {
+    dispatch(logoutThunk());
+  };
+
+  // useEffect(() => {
+  //   if (error !== "") alert(error);
+  // }, [error]);
 
   return (
     <>
@@ -56,19 +71,36 @@ const NavigationBar: React.FC<NavigationBarProps> = ({}) => {
           </Link>
         </div>
 
-        <Link
-          className="ms-auto nav-link p-0 d-flex justify-content-center align-items-center rounded-pill bg-black shadow border border-info"
-          to="/login"
-        >
-          <span
-            className={`h-100 wb-text-gray rounded-pill p-1 pe-2 ps-2 d-flex justify-content-center align-items-center ${
-              active === "login" ? "active" : ""
-            }`}
+        {currentUser.username === "" ? (
+          <Link
+            className="ms-auto nav-link p-0 d-flex justify-content-center align-items-center rounded-pill bg-black shadow border border-info"
+            to="/login"
           >
-            <i className="text-info ms-2 ms-md-0 me-2 bi bi-box-arrow-in-right"></i>
-            <span className="d-none d-md-inline">Log In</span>
-          </span>
-        </Link>
+            <span
+              className={`h-100 wb-text-gray rounded-pill p-1 pe-2 ps-2 d-flex justify-content-center align-items-center ${
+                active === "login" ? "active" : ""
+              }`}
+            >
+              {/* <i className="text-info ms-2 ms-md-0 me-2 bi bi-box-arrow-in-right"></i> */}
+              <span className="d-none d-md-inline">Log In</span>
+            </span>
+          </Link>
+        ) : (
+          <Link
+            className="ms-auto nav-link p-0 d-flex justify-content-center align-items-center rounded-pill bg-black shadow border border-danger"
+            onClick={logouthandler}
+            to="/"
+          >
+            <span
+              className={`h-100 wb-text-gray rounded-pill p-1 pe-2 ps-2 d-flex justify-content-center align-items-center ${
+                active === "login" ? "active" : ""
+              }`}
+            >
+              <i className="text-danger ms-2 ms-md-0 me-2 bi bi-box-arrow-in-right"></i>
+              <span className="d-none d-md-inline">Log Out</span>
+            </span>
+          </Link>
+        )}
       </div>
     </>
   );

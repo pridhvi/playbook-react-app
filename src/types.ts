@@ -100,8 +100,6 @@ export type Picture = {
   width: number;
 };
 
-
-
 export type Platform = {
   id: number;
   abbreviation: string;
@@ -126,3 +124,27 @@ export type Platform = {
 //   height: number;
 //   width: number;
 // };
+
+export type User = {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  // dob: Date;
+  // email: String,
+  // createdAt: Date;
+  // isAdmin: boolean;
+  role: string;
+};
+
+// export type LoginUser = {
+//   username: string;
+//   password: string;
+// };
+
+// export enum UserRoles {
+//   "admin",
+//   "user",
+//   "guest",
+//   "moderator",
+// }

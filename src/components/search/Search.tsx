@@ -5,13 +5,14 @@ import { SearchResult } from "../../types";
 import { AppDispatch } from "../../redux/Store";
 import SearchItem from "./SearchItem";
 import LoadingSpinner from "../LoadingSpinner";
+import LoadingCard from "../LoadingCard";
 
 interface SearchProps {}
 
 const Search: React.FC<SearchProps> = ({}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [criteria, setCriteria] = useState<string>("");
-  const { searchResult, loading: searchLoading } = useSelector(
+  const { searchResult, loading } = useSelector(
     (state: any) => state.searchData
   );
   // const [pageSize, setPageSize] = useState<number>(5);
@@ -154,7 +155,7 @@ const Search: React.FC<SearchProps> = ({}) => {
           </div>
         )}
 
-        {searchLoading && <LoadingSpinner />}
+        {loading ? <LoadingSpinner /> : null}
 
         {/* Iterating through search result */}
         {searchResult && (
