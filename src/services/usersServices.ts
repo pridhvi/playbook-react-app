@@ -15,7 +15,7 @@ export const signup = async (user: User) => {
   return newUser.data;
 };
 
-export const login = async (user: any) => {
+export const login = async (user: User) => {
   const newUser: AxiosResponse<User, any> = await api.post(
     `${BASE_URL}/login`,
     user
@@ -25,15 +25,13 @@ export const login = async (user: any) => {
 
 export const logout = async () => {
   const response = await api.post(`${BASE_URL}/logout`);
-  console.log(response);
   return response.data;
 };
 
 export const profile = () =>
   api.post(`${BASE_URL}/profile`).then((response) => response.data);
 
-export const findUserByUsername = async (username: string) => {
-  const response = await api.get(`${BASE_URL}/${username}`);
-//   console.log(response);
+export const isUser = async (username: string) => {
+  const response = await api.get(`${BASE_URL}/isUser/${username}`);
   return response.data;
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as service from "../../services/usersServices";
 import { User } from "../../types";
 import { useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/Store";
 import { loginThunk, signupThunk } from "../../services/usersThunks";
 
@@ -19,23 +19,22 @@ const Login: React.FC<LoginProps> = ({}) => {
   const [signupError, setSignupError] = useState<string>("");
   const [loginError, setLoginError] = useState<string>("");
   const [isUniqueUsername, setIsUniqueUsername] = useState<boolean>(true);
-  const { currentUser, error } = useSelector(
-    (state: any) => state.currentUserData
-  );
-  // const navigate = useNavigate();
+  const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(false);
+
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-
-  // if (currentUser.username !== "" && error === "") navigate("/");
-
-  const passwordChangeHandler = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => setPassword(e.target.value);
-  const confirmPasswordChangeHandler = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => setConfirmPassword(e.target.value);
 
   const signupSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if(!isUniqueUsername) {
+      setSignupError("This username already exists.");
+      return;
+    }
+    if (username === "" || firstName === "" || password === "") {
+      setSignupError("Please fill all required fields.");
+      return;
+    }
 
     const newUser: User = {
       username,
@@ -47,28 +46,48 @@ const Login: React.FC<LoginProps> = ({}) => {
       // isAdmin: false,
       role: "user",
     };
-    dispatch(signupThunk(newUser));
+
+    dispatch(signupThunk(newUser)).then((response) => {
+      if (response.type.includes("rejected"))
+        setSignupError("This username already exists. Please log in instead.");
+      else if (response.type.includes("fulfilled")) {
+        setSignupError("");
+        navigate("/profile");
+      }
+    });
   };
 
   const loginSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const loginUser = {
+
+    if (username === "" || password === "") {
+      setLoginError("Please fill all required fields.");
+      return;
+    }
+
+    const loginUser: User = {
       username,
       password,
     };
-    dispatch(loginThunk(loginUser));
+    dispatch(loginThunk(loginUser)).then((response) => {
+      if (response.type.includes("rejected"))
+        setLoginError("Invalid credentials. Try again.");
+      else if (response.type.includes("fulfilled")) {
+        setLoginError("");
+        navigate("/profile");
+      }
+    });
   };
 
   useEffect(() => {
-    if (active === "signup") setSignupError(error);
-    else if (active === "login") setLoginError(error);
-  }, [error]);
+    if (password !== "") setIsPasswordMatch(password === confirmPassword);
+  }, [confirmPassword, password]);
 
   useEffect(() => {
     // Check if username is unique
     if (active === "signup")
       service
-        .findUserByUsername(username)
+        .isUser(username)
         .then(() => setIsUniqueUsername(false))
         .catch(() => setIsUniqueUsername(true));
   }, [username]);
@@ -100,7 +119,9 @@ const Login: React.FC<LoginProps> = ({}) => {
             <small className="text-danger">{loginError}</small>
             <form onSubmit={loginSubmitHandler}>
               <div className="form-group mt-3 mb-3">
-                <label htmlFor="usernameInput">Username</label>
+                <label htmlFor="usernameInput">
+                  Username<span className="text-danger">*</span>
+                </label>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -112,10 +133,12 @@ const Login: React.FC<LoginProps> = ({}) => {
                 />
               </div>
               <div className="form-group mt-3 mb-3">
-                <label htmlFor="usernamePassword">Password</label>
+                <label htmlFor="usernamePassword">
+                  Password<span className="text-danger">*</span>
+                </label>
                 <input
                   value={password}
-                  onChange={passwordChangeHandler}
+                  onChange={(e) => setPassword(e.target.value)}
                   type={showPassword ? "text" : "password"}
                   className="d-inline form-control"
                   id="passwordInput"
@@ -140,7 +163,9 @@ const Login: React.FC<LoginProps> = ({}) => {
             <small className="text-danger">{signupError}</small>
             <form onSubmit={signupSubmitHandler}>
               <div className="form-group mt-3 mb-3">
-                <label htmlFor="firstNameInput">First Name</label>
+                <label htmlFor="firstNameInput">
+                  First Name<span className="text-danger">*</span>
+                </label>
                 <input
                   value={firstName}
                   onChange={(e) => {
@@ -168,7 +193,9 @@ const Login: React.FC<LoginProps> = ({}) => {
               </div>
 
               <div className="form-group mt-3 mb-3">
-                <label htmlFor="usernameInput">Username</label>
+                <label htmlFor="usernameInput">
+                  Username<span className="text-danger">*</span>
+                </label>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -185,10 +212,12 @@ const Login: React.FC<LoginProps> = ({}) => {
               </div>
 
               <div className="form-group mt-3 mb-3">
-                <label htmlFor="passwordInput">Password</label>
+                <label htmlFor="passwordInput">
+                  Password<span className="text-danger">*</span>
+                </label>
                 <input
                   value={password}
-                  onChange={passwordChangeHandler}
+                  onChange={(e) => setPassword(e.target.value)}
                   type={showPassword ? "text" : "password"}
                   className="d-inline form-control"
                   id="passwordInput"
@@ -200,15 +229,17 @@ const Login: React.FC<LoginProps> = ({}) => {
                   } text-black`}
                   onClick={() => setShowPassword(!showPassword)}
                 ></i>
-                <small id="usernameHelp" className="form-text text-muted">
+                <small id="passwordHelp" className="form-text text-muted">
                   Choose a strong password.
                 </small>
               </div>
               <div className="form-group mt-3 mb-3">
-                <label htmlFor="confirmPasswordInput">Confirm Password</label>
+                <label htmlFor="confirmPasswordInput">
+                  Confirm Password<span className="text-danger">*</span>
+                </label>
                 <input
                   value={confirmPassword}
-                  onChange={confirmPasswordChangeHandler}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   type={showPassword ? "text" : "password"}
                   className="d-inline form-control"
                   id="confirmPasswordInput"
@@ -220,6 +251,21 @@ const Login: React.FC<LoginProps> = ({}) => {
                   } text-black`}
                   onClick={() => setShowPassword(!showPassword)}
                 ></i>
+                {isPasswordMatch ? (
+                  <small
+                    id="confirmPasswordHelp"
+                    className="form-text text-success"
+                  >
+                    Passwords match
+                  </small>
+                ) : (
+                  <small
+                    id="confirmPasswordHelp"
+                    className="form-text text-danger"
+                  >
+                    Passwords do not match
+                  </small>
+                )}
               </div>
               <button type="submit" className="btn btn-success mt-3 mb-3">
                 Submit

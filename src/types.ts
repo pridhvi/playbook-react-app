@@ -127,24 +127,23 @@ export type Platform = {
 
 export type User = {
   username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
+  password?: string;
+  firstName?: string;
+  lastName?: string;
   // dob: Date;
   // email: String,
-  // createdAt: Date;
+  createdAt?: Date;
   // isAdmin: boolean;
-  role: string;
+  role?: string;
 };
 
-// export type LoginUser = {
-//   username: string;
-//   password: string;
-// };
-
-// export enum UserRoles {
-//   "admin",
-//   "user",
-//   "guest",
-//   "moderator",
-// }
+export type Comment = {
+  _id?: string;
+  comment: string;
+  itemType: string;
+  itemId: number;
+  username: number;
+  likesUsernames: string[];
+  dislikesUsernames: string[];
+  createdAt?: Date;
+};

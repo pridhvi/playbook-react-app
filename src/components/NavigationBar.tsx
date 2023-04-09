@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { logoutThunk } from "../services/usersThunks";
 import { AppDispatch } from "../redux/Store";
 
@@ -89,7 +89,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({}) => {
           <Link
             className="ms-auto nav-link p-0 d-flex justify-content-center align-items-center rounded-pill bg-black shadow border border-danger"
             onClick={logouthandler}
-            to="/"
+            to="#"
           >
             <span
               className={`h-100 wb-text-gray rounded-pill p-1 pe-2 ps-2 d-flex justify-content-center align-items-center ${
