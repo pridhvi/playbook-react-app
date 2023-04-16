@@ -82,7 +82,8 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
               <div className="container mt-4 pt-3 pb-3 d-flex flex-start wb-bg-gray wb-rounded-border">
                 <img
                   className="rounded-circle shadow-1-strong me-3 mt-2"
-                  src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"
+                  // src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"
+                  src="/profile-picture.jpeg"
                   alt="avatar"
                   width="60"
                   height="60"

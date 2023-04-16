@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginThunk, logoutThunk, signupThunk } from "../services/usersThunks";
+import { loginThunk, logoutThunk, signupThunk, updateUserThunk } from "../services/usersThunks";
 import { User } from "../types";
 
 interface ModalState {
@@ -30,6 +30,9 @@ const currentUserSlice = createSlice({
       })
       .addCase(logoutThunk.fulfilled, (state) => {
         state.currentUser = { username: "" };
+      })
+      .addCase(updateUserThunk.fulfilled, (state, action) => {
+        state.currentUser = action.payload;
       });
   },
 

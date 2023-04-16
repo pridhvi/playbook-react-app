@@ -42,3 +42,11 @@ export const findUserByUsername = async (username: string) => {
   );
   return user.data;
 };
+
+export const updateUser = async (user: User) => {
+  const reponse = await api.put(
+    `${BASE_URL}/${user._id}`,
+    user
+  );
+  return reponse.data;
+};

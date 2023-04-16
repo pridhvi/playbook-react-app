@@ -126,11 +126,14 @@ export type Platform = {
 // };
 
 export type User = {
+  _id?: string;
   username: string;
   password?: string;
   firstName?: string;
   lastName?: string;
-  // dob: Date;
+  about?: string;
+  dob?: string;
+  location?: string;
   // email: String,
   createdAt?: Date;
   // isAdmin: boolean;

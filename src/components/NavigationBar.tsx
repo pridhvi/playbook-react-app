@@ -81,7 +81,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({}) => {
                 active === "login" ? "active" : ""
               }`}
             >
-              {/* <i className="text-info ms-2 ms-md-0 me-2 bi bi-box-arrow-in-right"></i> */}
+              <i className="text-info ms-2 ms-md-0 me-2 bi bi-box-arrow-in-right"></i>
               <span className="d-none d-md-inline">Log In</span>
             </span>
           </Link>
@@ -96,7 +96,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({}) => {
                 active === "login" ? "active" : ""
               }`}
             >
-              <i className="text-danger ms-2 ms-md-0 me-2 bi bi-box-arrow-in-right"></i>
+              <i className="text-danger ms-2 ms-md-0 me-2 bi bi-box-arrow-in-left"></i>
               <span className="d-none d-md-inline">Log Out</span>
             </span>
           </Link>
