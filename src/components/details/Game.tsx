@@ -3,7 +3,6 @@ import { useLocation } from "react-router";
 import LoadingSpinner from "../LoadingSpinner";
 import { Comment, Game } from "../../types";
 import { findGameById } from "../../services/igdbServices";
-import { Link } from "react-router-dom";
 import {
   createComment,
   getAllCommentsByItem,

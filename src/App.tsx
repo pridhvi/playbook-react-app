@@ -13,6 +13,7 @@ import Character from "./components/details/Character";
 import { persistor, store } from "./redux/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import LoadingSpinner from "./components/LoadingSpinner";
+import OtherProfile from "./components/profile/OtherProfile";
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
           <Routes>
             <Route index element={<Home />}></Route>
             <Route path="/profile" element={<Profile />}></Route>
+            <Route path="/profile/:username" element={<OtherProfile />}></Route>
             <Route path="/search" element={<Search />}></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/details/games/:id" element={<Game />}></Route>

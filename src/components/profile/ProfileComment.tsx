@@ -3,12 +3,15 @@ import { Link } from "react-router-dom";
 import { Comment, User } from "../../types";
 import { updateComment } from "../../services/commentsServices";
 
-interface CommentProps {
+interface ProfileCommentProps {
   comment: Comment;
   currentUser: User;
 }
 
-const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
+const ProfileCommentComponent: React.FC<ProfileCommentProps> = ({
+  comment,
+  currentUser,
+}) => {
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isDislike, setIsDislike] = useState<boolean>(false);
 
@@ -18,35 +21,6 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
     if (comment.likesUsernames.find((u) => u === currentUser.username))
       setIsLike(true);
   }, []);
-
-  const likeClickHandler = () => {
-    if (currentUser.username === "") return;
-    if (isLike) {
-      comment.likesUsernames = comment.likesUsernames.filter(
-        (u) => u !== currentUser.username
-      );
-    } else {
-      comment.likesUsernames.unshift(currentUser.username);
-    }
-
-    setIsLike(!isLike);
-
-    updateComment(comment);
-  };
-
-  const dislikeClickHandler = () => {
-    if (currentUser.username === "") return;
-    if (isDislike) {
-      comment.dislikesUsernames = comment.dislikesUsernames.filter(
-        (u) => u !== currentUser.username
-      );
-    } else {
-      comment.dislikesUsernames.unshift(currentUser.username);
-    }
-
-    setIsDislike(!isDislike);
-    updateComment(comment);
-  };
 
   return (
     <div className="container mt-1 d-flex flex-start wb-bg-gray wb-rounded-border">
@@ -58,7 +32,7 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
         height="60"
       />
       <div className="mt-2 mb-2">
-        <Link
+      <Link
           className="text-decoration-none text-white"
           to={`/profile/${comment.username}`}
           target="_blank"
@@ -76,19 +50,11 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
         )}
         <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
         {/* disable buttons if not loggedin */}
-        <Link
-          to=""
-          className="text-danger me-1 mt-3"
-          onClick={likeClickHandler}
-        >
+        <Link to="" className="text-danger me-1 mt-3">
           <i className={`bi ${isLike ? "bi-heart-fill" : "bi-heart"}`}></i>
         </Link>
         <small className="me-4">{comment.likesUsernames.length}</small>
-        <Link
-          to=""
-          className="text-white me-1 mt-3"
-          onClick={dislikeClickHandler}
-        >
+        <Link to="" className="text-white me-1 mt-3">
           <i
             className={`bi ${
               isDislike ? "bi-hand-thumbs-down-fill" : "bi-hand-thumbs-down"
@@ -96,9 +62,17 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
           ></i>
         </Link>
         <small className="">{comment.dislikesUsernames.length}</small>
+
+        <Link
+          to={`/details/${comment.itemType}/${comment.itemId}`}
+          className="text-decoration-none d-block text-info"
+          target="_blank"
+        >
+          Go to comment
+        </Link>
       </div>
     </div>
   );
 };
 
-export default CommentComponent;
+export default ProfileCommentComponent;

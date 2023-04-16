@@ -5,7 +5,7 @@ import { SearchResult } from "../../types";
 import { AppDispatch } from "../../redux/Store";
 import SearchItem from "./SearchItem";
 import LoadingSpinner from "../LoadingSpinner";
-import LoadingCard from "../LoadingCard";
+import { useSearchParams } from "react-router-dom";
 
 interface SearchProps {}
 
@@ -23,17 +23,22 @@ const Search: React.FC<SearchProps> = ({}) => {
   const [isCompanies, setIsCompanies] = useState<boolean>(false);
   const [type, setType] = useState<string>("game");
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
-    dispatch(searchCriteriaThunk({ type, criteria, pageSize, pageNumber }));
+    const params = new URLSearchParams(window.location.search);
+    const c = params.get("c");
+    if (c) setCriteria(c);
   }, []);
 
   useEffect(() => {
     dispatch(searchCriteriaThunk({ type, criteria, pageSize, pageNumber }));
   }, [pageNumber, type]);
 
-  const criteriaChangeHandler = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => setCriteria(e.target.value);
+  useEffect(() => {
+    setSearchParams({ c: criteria });
+    dispatch(searchCriteriaThunk({ type, criteria, pageSize, pageNumber }));
+  }, [criteria]);
 
   const searchSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     if (criteria === "") {
@@ -86,7 +91,7 @@ const Search: React.FC<SearchProps> = ({}) => {
                 // placeholder="Search Playbook"
                 placeholder="Search games, characters, and companies"
                 value={criteria}
-                onChange={criteriaChangeHandler}
+                onChange={(e) => setCriteria(e.target.value)}
               />
               {/* <button
                 type="submit"

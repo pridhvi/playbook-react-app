@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { Comment } from "../types";
+import { Comment, User } from "../types";
 
 // const BASE_URL = "http://localhost:4000/api/comments";
 const BASE_URL = "https://playbook-node-server.onrender.com/api/comments";
@@ -32,4 +32,13 @@ export const updateComment = async (comment: Comment) => {
     comment
   );
   return response.data;
+};
+
+export const getAllCommentsByUser = async (
+  username: string
+) => {
+  const comments: AxiosResponse<Comment[], any> = await api.get(
+    `${BASE_URL}/${username}`
+  );
+  return comments.data;
 };

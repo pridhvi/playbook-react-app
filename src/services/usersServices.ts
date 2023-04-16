@@ -35,3 +35,10 @@ export const isUser = async (username: string) => {
   const response = await api.get(`${BASE_URL}/isUser/${username}`);
   return response.data;
 };
+
+export const findUserByUsername = async (username: string) => {
+  const user: AxiosResponse<User, any> = await api.get(
+    `${BASE_URL}/${username}`,
+  );
+  return user.data;
+};
