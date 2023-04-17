@@ -50,7 +50,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
     });
   };
 
-  const responsive = {
+  const responsiveScreenshots = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
       breakpoint: { max: 4000, min: 3000 },
@@ -70,12 +70,32 @@ const GameComponent: React.FC<GameProps> = ({}) => {
     },
   };
 
+  const responsiveVideos = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 3000 },
+      items: 3,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 2,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 1,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
+
   return (
     <>
       <div className="bg-black bg-opacity-75">
         {game ? (
           <>
-            {game.artworks ? (
+            {game.artworks && (
               <img
                 height="450px"
                 width="100%"
@@ -85,7 +105,20 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                 alt="artwork"
                 className="wb-game-artwork"
               />
-            ) : (
+            )}
+
+            {!game.artworks && game.screenshots && (
+              <img
+                height="450px"
+                width="100%"
+                src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
+                  game.screenshots[0]?.url.split("/")[7]
+                }`}
+                alt="screenshot"
+                className="wb-game-artwork"
+              />
+            )}
+            {!game.artworks && !game.screenshots && (
               <img
                 height="450px"
                 width="100%"
@@ -131,11 +164,15 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                   </div>
                 ) : null}
 
-                <h3>Screenshots</h3>
+                <h3 className="mt-3 mb-2">Screenshots</h3>
 
-                {/* {game.screenshots && ( */}
-                  <Carousel responsive={responsive} swipeable={true} infinite={false}>
-                    {game.screenshots && game.screenshots.map((s) => (
+                <Carousel
+                  responsive={responsiveScreenshots}
+                  swipeable={true}
+                  infinite={false}
+                >
+                  {game.screenshots &&
+                    game.screenshots.map((s) => (
                       <img
                         src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
                           s.url.split("/")[7]
@@ -146,7 +183,8 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                         className="m-2"
                       />
                     ))}
-                    {game.artworks && game.artworks.map((a) => (
+                  {game.artworks &&
+                    game.artworks.map((a) => (
                       <img
                         src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
                           a.url.split("/")[7]
@@ -157,19 +195,27 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                         className="m-2"
                       />
                     ))}
-                  </Carousel>
-                {/* )} */}
+                </Carousel>
 
-                {/* {game.videos &&
-                  game.videos.map((v) => (
-                    <iframe
-                      width="560"
-                      height="315"
-                      src={`https://www.youtube.com/embed/${v.video_id}`}
-                      title="YouTube video player"
-                      allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture;"
-                    ></iframe>
-                  ))} */}
+                <h3 className="mt-3 mb-2">Videos</h3>
+
+                {game.videos && (
+                  <Carousel
+                    responsive={responsiveVideos}
+                    swipeable={true}
+                    infinite={false}
+                  >
+                    {game.videos.map((v) => (
+                      <iframe
+                        width="560"
+                        height="315"
+                        src={`https://www.youtube.com/embed/${v.video_id}`}
+                        title="YouTube video player"
+                        allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture;"
+                      ></iframe>
+                    ))}
+                  </Carousel>
+                )}
 
                 {game.storyline ? (
                   <>
@@ -177,6 +223,27 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                     <p>{game.storyline}</p>
                   </>
                 ) : null}
+              </div>
+
+              {/* Rating */}
+              <div className="container m-3 border row wb-bg-gray wb-rounded-border">
+                <div className="col-3">
+                  <p>Average User Rating</p>
+                  <span>{Number(game.rating).toFixed()}</span>
+                  <small> / 100</small>
+                </div>
+                <div className="col-9 d-flex justify-content-center">
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                  <i className="bi bi-star m-2"></i>
+                </div>
               </div>
 
               {/* Comments Section */}
