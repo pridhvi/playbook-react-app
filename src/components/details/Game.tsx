@@ -10,6 +10,9 @@ import {
 import CommentComponent from "./Comment";
 import { useSelector } from "react-redux";
 
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+
 interface GameProps {}
 
 const GameComponent: React.FC<GameProps> = ({}) => {
@@ -47,87 +50,184 @@ const GameComponent: React.FC<GameProps> = ({}) => {
     });
   };
 
+  const responsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
+
   return (
-    <div className="container">
-      {game ? (
-        <>
-          <h1>{game.name}</h1>
-          {game.cover && (
-            <img
-              src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${
-                game.cover?.url.split("/")[7]
-              }`}
-              height="250px"
-              alt="cover"
-            />
-          )}
-
-          {game.platformsNames ? (
-            <>
-              <h3 className="">Platforms: </h3>
-              <p>{game.platformsNames}</p>
-            </>
-          ) : null}
-          {game.storyline ? (
-            <>
-              <h3>Storyline: </h3>
-              <p>{game.storyline}</p>
-            </>
-          ) : null}
-          {game.summary ? (
-            <>
-              <h3>Summary: </h3>
-              <p>{game.summary}</p>
-            </>
-          ) : null}
-
-          {/* Comments Section */}
-
-          <div className="mb-5">
-            <h3>Comments:</h3>
-            {currentUser.username !== "" ? (
-              <div className="container mt-4 pt-3 pb-3 d-flex flex-start wb-bg-gray wb-rounded-border">
-                <img
-                  className="rounded-circle shadow-1-strong me-3 mt-2"
-                  // src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"
-                  src="/profile-picture.jpeg"
-                  alt="avatar"
-                  width="60"
-                  height="60"
-                />
-                <div className="col-10">
-                  <textarea
-                    value={comment}
-                    placeholder="Write a comment..."
-                    className="form-control border-0 bg-black wd-border-ta text-white"
-                    onChange={(e) => setComment(e.target.value)}
-                  ></textarea>
-                  <div>
-                    <button
-                      className="rounded-pill btn btn-primary bg-tuiter float-end mt-2 ps-3 pe-3 fw-bold"
-                      onClick={commentSubmitHandler}
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-info fst-italic">Login to comment here.</p>
-            )}
-            {comments?.map((comment) => (
-              <CommentComponent
-                key={comment._id}
-                comment={comment}
-                currentUser={currentUser}
+    <>
+      <div className="bg-black bg-opacity-75">
+        {game ? (
+          <>
+            {game.artworks ? (
+              <img
+                height="450px"
+                width="100%"
+                src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
+                  game.artworks[0]?.url.split("/")[7]
+                }`}
+                alt="artwork"
+                className="wb-game-artwork"
               />
-            ))}
-          </div>
-        </>
-      ) : (
-        <LoadingSpinner />
-      )}
-    </div>
+            ) : (
+              <img
+                height="450px"
+                width="100%"
+                src="/game-banner.jpg"
+                alt="artwork"
+                className="wb-game-artwork"
+              />
+            )}
+
+            <div className="col-8 wb-game container">
+              {game.cover && (
+                <img
+                  src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
+                    game.cover?.url.split("/")[7]
+                  }`}
+                  height="300px"
+                  alt="cover"
+                />
+              )}
+
+              <h1 className="d-block d-xl-inline ms-2">{game.name}</h1>
+              <div>
+                {game.first_release_date && (
+                  <div className="mb-3">
+                    <span className="fw-bold">Release Date: </span>
+                    <span className="fw-light fst-italic">
+                      {new Date(game.first_release_date * 1000).toDateString()}
+                    </span>
+                  </div>
+                )}
+
+                {game.platformsNames ? (
+                  <>
+                    <span className="fw-bold">Platforms: </span>
+                    <small className="fw-light fst-italic">
+                      {game.platformsNames}
+                    </small>
+                  </>
+                ) : null}
+                {game.summary ? (
+                  <div className="mt-3">
+                    <p>{game.summary}</p>
+                  </div>
+                ) : null}
+
+                <h3>Screenshots</h3>
+
+                {/* {game.screenshots && ( */}
+                  <Carousel responsive={responsive} swipeable={true} infinite={false}>
+                    {game.screenshots && game.screenshots.map((s) => (
+                      <img
+                        src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
+                          s.url.split("/")[7]
+                        }`}
+                        width="95%"
+                        height="200px"
+                        alt="cover"
+                        className="m-2"
+                      />
+                    ))}
+                    {game.artworks && game.artworks.map((a) => (
+                      <img
+                        src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
+                          a.url.split("/")[7]
+                        }`}
+                        height="200px"
+                        width="95%"
+                        alt="cover"
+                        className="m-2"
+                      />
+                    ))}
+                  </Carousel>
+                {/* )} */}
+
+                {/* {game.videos &&
+                  game.videos.map((v) => (
+                    <iframe
+                      width="560"
+                      height="315"
+                      src={`https://www.youtube.com/embed/${v.video_id}`}
+                      title="YouTube video player"
+                      allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture;"
+                    ></iframe>
+                  ))} */}
+
+                {game.storyline ? (
+                  <>
+                    <h3 className="mt-3">Storyline</h3>
+                    <p>{game.storyline}</p>
+                  </>
+                ) : null}
+              </div>
+
+              {/* Comments Section */}
+
+              <div className="pb-5">
+                <h3>Comments</h3>
+                {currentUser.username !== "" ? (
+                  <div className="container mt-4 pt-3 pb-3 d-flex flex-start wb-bg-gray wb-rounded-border">
+                    <img
+                      className="rounded-circle shadow-1-strong me-3 mt-2"
+                      // src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"
+                      src="/profile-picture.jpeg"
+                      alt="avatar"
+                      width="60"
+                      height="60"
+                    />
+                    <div className="col-10">
+                      <textarea
+                        value={comment}
+                        placeholder="Write a comment..."
+                        className="form-control border-0 bg-black wd-border-ta text-white"
+                        onChange={(e) => setComment(e.target.value)}
+                      ></textarea>
+                      <div>
+                        <button
+                          className="rounded-pill btn btn-primary bg-tuiter float-end mt-2 ps-3 pe-3 fw-bold"
+                          onClick={commentSubmitHandler}
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-info fst-italic">Login to comment here.</p>
+                )}
+                {comments?.map((comment) => (
+                  <CommentComponent
+                    key={comment._id}
+                    comment={comment}
+                    currentUser={currentUser}
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <LoadingSpinner />
+        )}
+      </div>
+    </>
   );
 };
 

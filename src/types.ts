@@ -20,8 +20,8 @@ export type Game = {
   aggregated_rating: number;
   aggregated_rating_count: number;
   alternative_names: number[];
-  artworks: number[];
-  artworkUrls: string[];
+  artworks: Picture[];
+  // artworkUrls: string[];
   bundles: number[];
   // category	Category Enum;
   checksum: number;
@@ -32,7 +32,7 @@ export type Game = {
   expanded_games: number[];
   expansions: number[];
   external_games: number[];
-  first_release_date: number[];
+  first_release_date: number;
   follows: number;
   forks: number[];
   franchise: number;
@@ -57,7 +57,7 @@ export type Game = {
   release_dates: number[];
   remakes: number[];
   remasters: number[];
-  screenshots: number[];
+  screenshots: Picture[];
   similar_games: number[];
   slug: string;
   standalone_expansions: number[];
@@ -72,7 +72,7 @@ export type Game = {
   url: string;
   version_parent: number;
   version_title: string;
-  videos: number[];
+  videos: Picture[];
   websites: number[];
 };
 
@@ -98,6 +98,7 @@ export type Picture = {
   url: string;
   height: number;
   width: number;
+  video_id: string;
 };
 
 export type Platform = {

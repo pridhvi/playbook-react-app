@@ -58,3 +58,11 @@ body {
     /* background-color: lightgray; */
     background-color: rgb(50, 50, 50);
 }
+
+.wb-game {
+    margin-top: -200px;
+}
+
+.wb-game-artwork {
+    margin-top: -40px;
+}

@@ -37,7 +37,7 @@ const Search: React.FC<SearchProps> = ({}) => {
 
   useEffect(() => {
     setSearchParams({ c: criteria });
-    dispatch(searchCriteriaThunk({ type, criteria, pageSize, pageNumber }));
+    // dispatch(searchCriteriaThunk({ type, criteria, pageSize, pageNumber }));
   }, [criteria]);
 
   const searchSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
