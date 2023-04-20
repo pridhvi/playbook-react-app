@@ -146,8 +146,23 @@ export type Comment = {
   comment: string;
   itemType: string;
   itemId: number;
-  username: number;
+  username: string;
   likesUsernames: string[];
   dislikesUsernames: string[];
   createdAt?: Date;
+};
+
+export type Follow = {
+  _id?: string;
+  masterUser: string;
+  followingUser: string;
+};
+
+export type Rating = {
+  _id?: string;
+  rating: number;
+  itemType: string;
+  itemId: number;
+  username: number;
+  isNew?: boolean;
 };

@@ -26,6 +26,13 @@ export const createComment = async (comment: Comment) => {
   return comments.data;
 };
 
+export const deleteComment = async (comment: Comment) => {
+  const comments: AxiosResponse<Comment[], any> = await api.delete(
+    `${BASE_URL}/${comment._id}`
+  );
+  return comments.data;
+};
+
 export const updateComment = async (comment: Comment) => {
   const response: AxiosResponse<Comment, any> = await api.put(
     `${BASE_URL}/${comment._id}`,

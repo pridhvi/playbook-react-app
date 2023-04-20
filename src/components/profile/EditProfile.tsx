@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { User } from "../../types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/Store";
@@ -11,7 +11,9 @@ interface EditProfileProps {
 const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
   const [updatedUser, setUpdatedUser] = useState<User>();
   const dispatch = useDispatch<AppDispatch>();
-  const [message, setMessage] = useState<string>("");
+  // const [message, setMessage] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const closeModalRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // if(currentUser.dob === "")
@@ -22,9 +24,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
 
   const handleUserUpdate = () => {
     if (updatedUser)
-      dispatch(updateUserThunk(updatedUser)).then(() =>
-        setMessage("Profile Updated!")
-      );
+      dispatch(updateUserThunk(updatedUser)).then(() =>{
+        if(closeModalRef.current) closeModalRef.current.click();
+      });
   };
 
   return (
@@ -33,9 +35,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
         <>
           <div
             className="modal fade"
-            id="exampleModal"
+            id="editProfileModal"
             tabIndex={-1}
-            aria-labelledby="exampleModalLabel"
+            aria-labelledby="editProfileModalLabel"
             aria-hidden="true"
           >
             <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -43,20 +45,25 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
                 <div className="modal-header">
                   <h1
                     className="modal-title fs-5 text-black"
-                    id="exampleModalLabel"
+                    id="editProfileModalLabel"
                   >
                     Edit Profile
                   </h1>
                   <button
                     type="button"
                     className="btn-close"
+                    onClick={() => {
+                      // setMessage("");
+                      setShowPassword(false);
+                    }}
                     data-bs-dismiss="modal"
                     aria-label="Close"
+                    ref={closeModalRef}
                   ></button>
                 </div>
                 <div className="modal-body text-black">
                   <div className="form-floating mb-4">
-                    <textarea
+                    <input
                       className="form-control"
                       onChange={(e) => {
                         setUpdatedUser({
@@ -66,12 +73,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
                       }}
                       value={`${updatedUser.firstName}`}
                       id="firstName"
-                    ></textarea>
+                    ></input>
                     <label htmlFor="firstName">Firstname</label>
                   </div>
 
                   <div className="form-floating mb-4">
-                    <textarea
+                    <input
                       className="form-control"
                       onChange={(e) => {
                         setUpdatedUser({
@@ -81,22 +88,29 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
                       }}
                       value={`${updatedUser.lastName}`}
                       id="lastName"
-                    ></textarea>
+                    ></input>
                     <label htmlFor="lastName">Lastname</label>
                   </div>
 
                   <div className="form-floating mb-4">
-                    <textarea
-                      className="form-control"
+                    <input
+                      className="form-control d-inline"
                       onChange={(e) => {
                         setUpdatedUser({
                           ...updatedUser,
                           password: e.target.value,
                         });
                       }}
-                      value={`${updatedUser.password}`}
+                      type={showPassword ? "text" : "password"}
+                      value={updatedUser.password}
                       id="password"
-                    ></textarea>
+                    ></input>
+                    <i
+                      className={`d-inline bi ${
+                        showPassword ? "bi-eye-slash" : "bi-eye"
+                      } text-black password-icon`}
+                      onClick={() => setShowPassword(!showPassword)}
+                    ></i>
                     <label htmlFor="password">Password</label>
                   </div>
 
@@ -118,7 +132,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
                   </div>
 
                   <div className="form-floating mb-4">
-                    <textarea
+                    <input
                       className="form-control"
                       onChange={(e) => {
                         setUpdatedUser({
@@ -128,7 +142,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
                       }}
                       value={updatedUser.location}
                       id="location"
-                    ></textarea>
+                    ></input>
                     <label htmlFor="location">Location</label>
                   </div>
 
@@ -144,7 +158,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
                   </div>} */}
                 </div>
                 <div className="modal-footer">
-                  <small className="text-success">{message}</small>
+                  {/* <small className="text-success">{message}</small> */}
                   <button
                     type="button"
                     className="btn btn-success"

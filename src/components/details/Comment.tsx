@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Comment, User } from "../../types";
-import { updateComment } from "../../services/commentsServices";
+import { deleteComment, updateComment } from "../../services/commentsServices";
 
 interface CommentProps {
   comment: Comment;
   currentUser: User;
+  removeComment: (comment: Comment) => void;
+  editComment: (comment: Comment) => void;
 }
 
-const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
+const CommentComponent: React.FC<CommentProps> = ({
+  comment,
+  currentUser,
+  removeComment,
+  editComment,
+}) => {
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isDislike, setIsDislike] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [commentString, setCommentString] = useState<string>(comment.comment);
 
   useEffect(() => {
     if (comment.dislikesUsernames.find((u) => u === currentUser.username))
@@ -20,7 +29,10 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
   }, []);
 
   const likeClickHandler = () => {
-    if (currentUser.username === "") return;
+    if (currentUser.username === "") {
+      alert("Please login to interact with this comment!");
+      return;
+    }
     if (isLike) {
       comment.likesUsernames = comment.likesUsernames.filter(
         (u) => u !== currentUser.username
@@ -35,7 +47,10 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
   };
 
   const dislikeClickHandler = () => {
-    if (currentUser.username === "") return;
+    if (currentUser.username === "") {
+      alert("Please login to interact with this comment!");
+      return;
+    }
     if (isDislike) {
       comment.dislikesUsernames = comment.dislikesUsernames.filter(
         (u) => u !== currentUser.username
@@ -48,8 +63,28 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
     updateComment(comment);
   };
 
+  const editCommentClickHandler = () => {
+    if (currentUser.username === comment.username) {
+      const newComment = { ...comment, comment: commentString };
+      updateComment(newComment).then(() => {
+        setIsEdit(!isEdit);
+        editComment(newComment);
+      });
+    }
+  };
+
+  const deleteCommentClickHandler = () => {
+    if (
+      currentUser.username === comment.username &&
+      window.confirm("Do you really want to delete the comment?")
+    ) {
+      deleteComment(comment).then(() => removeComment(comment));
+    }
+  };
+
   return (
-    <div className="container mt-1 d-flex flex-start wb-bg-gray wb-rounded-border">
+    <div className={`container mt-1 d-flex flex-start wb-bg-gray wb-rounded-border 
+    ${currentUser.username === comment.username && "border border-4 border-success"}`}>
       <img
         className="rounded-circle shadow-1-strong me-3 mt-2"
         // src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"
@@ -58,16 +93,33 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
         width="60"
         height="60"
       />
+
       <div className="mt-2 mb-2">
         <Link
           className="text-decoration-none text-white"
           to={`/profile/${comment.username}`}
           target="_blank"
         >
-          <h6 className="fw-bold mb-1">{comment.username}</h6>
+          <span className="fw-bold mb-1">{comment.username}</span>
         </Link>
+
+        {currentUser.username === comment.username && (
+          <>
+            <Link
+              to=""
+              className="bi bi-pencil ms-2 text-warning"
+              onClick={() => setIsEdit(!isEdit)}
+            ></Link>
+            <Link
+              to=""
+              className="bi bi-trash ms-2 text-danger"
+              onClick={deleteCommentClickHandler}
+            ></Link>
+          </>
+        )}
+
         {comment.createdAt && (
-          <small className="fw-light">
+          <small className="fw-light d-block">
             {new Date(comment.createdAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
@@ -75,7 +127,35 @@ const CommentComponent: React.FC<CommentProps> = ({ comment, currentUser }) => {
             })}
           </small>
         )}
-        <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
+
+        {/* Edit comment */}
+        {isEdit ? (
+          <>
+            <textarea
+              value={commentString}
+              placeholder="Edit your comment..."
+              className="form-control border-0 bg-black wd-border-ta text-white"
+              onChange={(e) => setCommentString(e.target.value)}
+            ></textarea>
+            <div>
+              <button
+                className=" btn btn-danger bg-tuiter mt-1 p-0 ps-1 pe-1 fw-bold"
+                onClick={() => setIsEdit(!isEdit)}
+              >
+                Cancel
+              </button>
+              <button
+                className=" btn btn-success bg-tuiter ms-2 mt-1 p-0 ps-1 pe-1 fw-bold"
+                onClick={editCommentClickHandler}
+              >
+                Done
+              </button>
+            </div>
+          </>
+        ) : (
+          <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
+        )}
+
         {/* disable buttons if not loggedin */}
         <Link
           to=""

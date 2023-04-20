@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import LoadingSpinner from "../LoadingSpinner";
-import { Comment, Game } from "../../types";
+import { Comment, Game, Rating } from "../../types";
 import { findGameById } from "../../services/igdbServices";
 import {
   createComment,
@@ -12,6 +12,10 @@ import { useSelector } from "react-redux";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import RatingSvg from "./RatingSvg";
+import RatingModal from "./RatingModal";
+import { Link } from "react-router-dom";
+import { getAllRatingsByItem } from "../../services/ratingsService";
 
 interface GameProps {}
 
@@ -21,18 +25,90 @@ const GameComponent: React.FC<GameProps> = ({}) => {
   const [game, setGame] = useState<Game>();
   const [comments, setComments] = useState<Comment[]>([]);
   const [comment, setComment] = useState<string>("");
+  const [ratings, setRatings] = useState<Rating[]>([]);
+  const [userRating, setUserRating] = useState<number>(0);
+  const [playbookRating, setPlaybookRating] = useState<number>(0);
+
   const { currentUser } = useSelector((state: any) => state.currentUserData);
+  const [userRatingObj, setUserRatingObj] = useState<Rating>({
+    rating: 0,
+    itemType: "games",
+    itemId: gameId,
+    username: currentUser.username,
+    isNew: true,
+  });
 
   useEffect(() => {
     fetchGame();
     fetchComments();
+    fetchRatings(); //.then(()=>calculatePlaybookRating());
   }, []);
+
+  useEffect(() => {
+    // console.log(ratings)
+    if (ratings) {
+      const u: any = ratings.find((r) => r.username === currentUser.username);
+      // ratings.filter((r: Rating) => {
+      //   if (r.username === currentUser.username) return r.rating;
+      // })[0];
+      if (u !== undefined) {
+        setUserRatingObj({ ...u, isNew: false });
+        setUserRating(u.rating);
+      }
+      calculatePlaybookRating();
+    }
+  }, [ratings]);
+
+  const calculatePlaybookRating = () => {
+    console.log(ratings);
+    let playbookTotalRatings = 0;
+    ratings.map((r) => (playbookTotalRatings += Number(r.rating)));
+    const playbookAverage = playbookTotalRatings / ratings.length;
+    setPlaybookRating(playbookAverage);
+  };
 
   const fetchGame = async () => {
     setGame(await findGameById(gameId));
   };
+
   const fetchComments = async () => {
     setComments(await getAllCommentsByItem("games", gameId));
+  };
+
+  const fetchRatings = async () => {
+    setRatings(await getAllRatingsByItem("games", gameId));
+  };
+
+  const removeComment = (comment: Comment) => {
+    setComments(comments.filter((c) => comment._id !== c._id));
+  };
+
+  const editComment = (comment: Comment) => {
+    setComments(
+      comments.filter((c) => {
+        if (comment._id === c._id) c.comment = comment.comment;
+        return c;
+      })
+    );
+  };
+
+  const updateRatings = (rating: Rating) => {
+    let newRatings = ratings.filter(() => {});
+    if (rating.isNew) {
+      newRatings.push({ ...rating, isNew: false });
+      setRatings(newRatings);
+    } else {
+      newRatings = ratings.filter((r) => {
+        if (r._id === rating._id) r.rating = rating.rating;
+        return r;
+      });
+      setRatings(newRatings);
+    }
+  };
+
+  const removeRating = (rating: Rating) => {
+    setRatings(ratings.filter((r) => rating._id !== r._id));
+    setUserRating(0);
   };
 
   const commentSubmitHandler = () => {
@@ -52,7 +128,6 @@ const GameComponent: React.FC<GameProps> = ({}) => {
 
   const responsiveScreenshots = {
     superLargeDesktop: {
-      // the naming can be any, depends on you.
       breakpoint: { max: 4000, min: 3000 },
       items: 5,
     },
@@ -72,7 +147,6 @@ const GameComponent: React.FC<GameProps> = ({}) => {
 
   const responsiveVideos = {
     superLargeDesktop: {
-      // the naming can be any, depends on you.
       breakpoint: { max: 4000, min: 3000 },
       items: 3,
     },
@@ -128,8 +202,8 @@ const GameComponent: React.FC<GameProps> = ({}) => {
               />
             )}
 
-            <div className="col-8 wb-game container">
-              {game.cover && (
+            <div className="col-12 col-lg-8 wb-game container">
+              {game.cover ? (
                 <img
                   src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
                     game.cover?.url.split("/")[7]
@@ -137,9 +211,53 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                   height="300px"
                   alt="cover"
                 />
+              ) : (
+                <img src="/no-image.jpeg" height="300px" alt="cover" />
               )}
 
-              <h1 className="d-block d-xl-inline ms-2">{game.name}</h1>
+              <div className="d-block d-xl-inline ms-xl-2">
+                <h1 className="d-block d-xl-inline ms-xl-2">{game.name}</h1>
+                <Link
+                  to=""
+                  className={`${currentUser.user === ""? "d-none":"d-block d-xl-inline"} text-decoration-none`}
+                  data-bs-toggle="modal"
+                  data-bs-target="#ratingModal"
+                >
+                  <RatingSvg
+                    rating={userRating}
+                    size="120px"
+                    colour="green"
+                    type="You"
+                  />
+                </Link>
+                {currentUser.user === "" && <RatingSvg
+                    rating={userRating}
+                    size="120px"
+                    colour="green"
+                    type="You"
+                  />}
+                <RatingSvg
+                  rating={playbookRating}
+                  size="100px"
+                  colour="yellow"
+                  type="Playbook"
+                />
+                <RatingSvg
+                  rating={game.rating}
+                  size="90px"
+                  colour="black"
+                  type="IGDB"
+                />
+                {userRatingObj && (
+                  <RatingModal
+                    rating={userRatingObj}
+                    itemType={"games"}
+                    itemId={gameId}
+                    updateRatings={updateRatings}
+                    removeRating={removeRating}
+                  />
+                )}
+              </div>
               <div>
                 {game.first_release_date && (
                   <div className="mb-3">
@@ -164,7 +282,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                   </div>
                 ) : null}
 
-                <h3 className="mt-3 mb-2">Screenshots</h3>
+                {game.screenshots && <h3 className="mt-3 mb-2">Screenshots</h3>}
 
                 <Carousel
                   responsive={responsiveScreenshots}
@@ -181,6 +299,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                         height="200px"
                         alt="cover"
                         className="m-2"
+                        key={s.url}
                       />
                     ))}
                   {game.artworks &&
@@ -193,11 +312,12 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                         width="95%"
                         alt="cover"
                         className="m-2"
+                        key={a.url}
                       />
                     ))}
                 </Carousel>
 
-                <h3 className="mt-3 mb-2">Videos</h3>
+                {game.videos && <h3 className="mt-3 mb-2">Videos</h3>}
 
                 {game.videos && (
                   <Carousel
@@ -212,6 +332,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                         src={`https://www.youtube.com/embed/${v.video_id}`}
                         title="YouTube video player"
                         allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture;"
+                        key={v.video_id}
                       ></iframe>
                     ))}
                   </Carousel>
@@ -226,12 +347,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
               </div>
 
               {/* Rating */}
-              <div className="container m-3 border row wb-bg-gray wb-rounded-border">
-                <div className="col-3">
-                  <p>Average User Rating</p>
-                  <span>{Number(game.rating).toFixed()}</span>
-                  <small> / 100</small>
-                </div>
+              {/* <div className="container m-3 border row wb-bg-gray wb-rounded-border">
                 <div className="col-9 d-flex justify-content-center">
                   <i className="bi bi-star m-2"></i>
                   <i className="bi bi-star m-2"></i>
@@ -244,7 +360,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                   <i className="bi bi-star m-2"></i>
                   <i className="bi bi-star m-2"></i>
                 </div>
-              </div>
+              </div> */}
 
               {/* Comments Section */}
 
@@ -280,11 +396,14 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                 ) : (
                   <p className="text-info fst-italic">Login to comment here.</p>
                 )}
+
                 {comments?.map((comment) => (
                   <CommentComponent
                     key={comment._id}
                     comment={comment}
                     currentUser={currentUser}
+                    removeComment={removeComment}
+                    editComment={editComment}
                   />
                 ))}
               </div>

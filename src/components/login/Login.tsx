@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/Store";
 import { loginThunk, signupThunk } from "../../services/usersThunks";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface LoginProps {}
 
@@ -20,11 +21,13 @@ const Login: React.FC<LoginProps> = ({}) => {
   const [loginError, setLoginError] = useState<string>("");
   const [isUniqueUsername, setIsUniqueUsername] = useState<boolean>(true);
   const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const signupSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
 
     if(!isUniqueUsername) {
@@ -54,10 +57,12 @@ const Login: React.FC<LoginProps> = ({}) => {
         setSignupError("");
         navigate("/profile");
       }
+      setLoading(false);
     });
   };
 
   const loginSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
 
     if (username === "" || password === "") {
@@ -76,6 +81,7 @@ const Login: React.FC<LoginProps> = ({}) => {
         setLoginError("");
         navigate("/profile");
       }
+      setLoading(false);
     });
   };
 
@@ -274,6 +280,8 @@ const Login: React.FC<LoginProps> = ({}) => {
           </div>
         )}
       </div>
+
+      {loading && <LoadingSpinner />}
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Comment, User } from "../../types";
-import { updateComment } from "../../services/commentsServices";
 
 interface ProfileCommentProps {
   comment: Comment;
@@ -51,17 +50,17 @@ const ProfileCommentComponent: React.FC<ProfileCommentProps> = ({
         )}
         <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
         {/* disable buttons if not loggedin */}
-        <Link to="" className="text-danger me-1 mt-3">
-          <i className={`bi ${isLike ? "bi-heart-fill" : "bi-heart"}`}></i>
-        </Link>
+        {/* <Link to="" className="text-danger me-1 mt-3"> */}
+          <i className={`bi ${isLike ? "bi-heart-fill" : "bi-heart"} text-danger me-1 mt-3`}></i>
+        {/* </Link> */}
         <small className="me-4">{comment.likesUsernames.length}</small>
-        <Link to="" className="text-white me-1 mt-3">
+        {/* <Link to="" className="text-white me-1 mt-3"> */}
           <i
             className={`bi ${
               isDislike ? "bi-hand-thumbs-down-fill" : "bi-hand-thumbs-down"
-            }`}
+            } text-danger me-1 mt-3`}
           ></i>
-        </Link>
+        {/* </Link> */}
         <small className="">{comment.dislikesUsernames.length}</small>
 
         <Link

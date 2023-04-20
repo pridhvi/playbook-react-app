@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "../LoadingSpinner";
 import { getAllCommentsByUser } from "../../services/commentsServices";
-import { Comment } from "../../types";
-import ProfileCommentComponent from "./ProfileComment";
+import { Comment, Follow, Rating } from "../../types";
 import { useNavigate } from "react-router";
 import EditProfile from "./EditProfile";
 import LatestActivity from "./LatestActivity";
+import {
+  getAllFollowsByFollowingUser,
+  getAllFollowsByMasterUser,
+} from "../../services/followsServices";
+import FollowsModal from "./FollowsModal";
+import { Link } from "react-router-dom";
+import { getAllRatingsByUsername } from "../../services/ratingsService";
 
 interface ProfileProps {}
 
@@ -15,18 +21,29 @@ const Profile: React.FC<ProfileProps> = ({}) => {
     (state: any) => state.currentUserData
   );
   const [comments, setComments] = useState<Comment[]>([]);
+  const [followers, setFollowers] = useState<Follow[]>([]);
+  const [following, setFollowing] = useState<Follow[]>([]);
+  const [ratings, setRatings] = useState<Rating[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentUser.username !== "") fetchLatestActivity(currentUser.username);
-    else {
+    if (currentUser.username !== "") {
+      fetchFollows(currentUser.username);
+      fetchLatestActivity(currentUser.username);
+    } else {
       alert("Please login to view profile!");
       navigate("/login");
     }
   }, []);
 
+  const fetchFollows = async (username: string) => {
+    setFollowers(await getAllFollowsByMasterUser(username));
+    setFollowing(await getAllFollowsByFollowingUser(username));
+  };
+
   const fetchLatestActivity = async (username: string) => {
     setComments(await getAllCommentsByUser(username));
+    setRatings(await getAllRatingsByUsername(username));
   };
 
   return (
@@ -52,7 +69,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
               <button
                 className="float-end btn btn-light rounded-pill mt-2"
                 data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                data-bs-target="#editProfileModal"
               >
                 Edit Profile
               </button>
@@ -87,17 +104,24 @@ const Profile: React.FC<ProfileProps> = ({}) => {
               </small>
             </div>
 
-            {/* <div className="container mb-2 wb-text-gray">
-              <small>{23}</small>
+            <Link
+              to=""
+              className="container mb-2 wb-text-gray"
+              data-bs-toggle="modal"
+              data-bs-target="#followsModal"
+            >
+              <small>{following?.length}</small>
               <small className="me-4 ps-2">Following</small>
-              <small>{33}</small>
+              <small>{followers?.length}</small>
               <small className="me-4 ps-2">Followers</small>
-            </div> */}
+            </Link>
 
-            <LatestActivity comments={comments} user={currentUser} />
+            <LatestActivity comments={comments} ratings={ratings} user={currentUser} />
 
             {/* Edit profile modal */}
             <EditProfile currentUser={currentUser} />
+
+            <FollowsModal followers={followers} following={following} />
           </>
         )}
         {loading && <LoadingSpinner />}

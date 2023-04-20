@@ -23,9 +23,22 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
   }, []);
   const fetchCharacter = async () => {
     setCharacter(await findCharacterById(characterId));
-  };const fetchComments = async () => {
+  };
+  
+  const fetchComments = async () => {
     setComments(await getAllCommentsByItem("characters", characterId));
   };
+
+  const removeComment = (comment: Comment) => {
+    setComments(comments.filter((c)=> comment._id !== c._id));
+  }
+  
+  const editComment = (comment: Comment) => {
+    setComments(comments.filter((c)=> {
+      if(comment._id === c._id) c.comment = comment.comment;
+      return c;
+    }));
+  }
 
   const commentSubmitHandler = () => {
     const newComment: Comment = {
@@ -113,6 +126,8 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
                 key={comment._id}
                 comment={comment}
                 currentUser={currentUser}
+                removeComment={removeComment}
+                editComment={editComment}
               />
             ))}
           </div>

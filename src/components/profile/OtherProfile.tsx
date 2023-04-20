@@ -1,28 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import LoadingSpinner from "../LoadingSpinner";
 import { getAllCommentsByUser } from "../../services/commentsServices";
-import { Comment, User } from "../../types";
-import CommentComponent from "../details/Comment";
-import ProfileCommentComponent from "./ProfileComment";
+import { Comment, Follow, Rating, User } from "../../types";
 import { useLocation } from "react-router";
 import { findUserByUsername } from "../../services/usersServices";
 import LatestActivity from "./LatestActivity";
+import {
+  createFollow,
+  deleteFollow,
+  getAllFollowsByFollowingUser,
+  getAllFollowsByMasterUser,
+} from "../../services/followsServices";
+import { Link } from "react-router-dom";
+import FollowsModal from "./FollowsModal";
+import { getAllRatingsByUsername } from "../../services/ratingsService";
 
 interface OtherProfileProps {}
 
 const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
-  //   const { currentUser, loading } = useSelector(
-  //     (state: any) => state.currentUserData
-  //   );
+  const { currentUser, loading } = useSelector(
+    (state: any) => state.currentUserData
+  );
   const [comments, setComments] = useState<Comment[]>([]);
   const [user, setUser] = useState<User>();
+  const [followers, setFollowers] = useState<Follow[]>([]);
+  const [following, setFollowing] = useState<Follow[]>([]);
+  const [ratings, setRatings] = useState<Rating[]>([]);
+
   const { pathname } = useLocation();
   const username: string = pathname.split("/")[2];
 
   useEffect(() => {
     if (username) {
       fetchUser(username);
+      fetchFollows(username);
       fetchLatestActivity(username);
     }
   }, []);
@@ -31,8 +42,29 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
     setUser(await findUserByUsername(username));
   };
 
+  const fetchFollows = async (username: string) => {
+    setFollowers(await getAllFollowsByMasterUser(username));
+    setFollowing(await getAllFollowsByFollowingUser(username));
+  };
+
   const fetchLatestActivity = async (username: string) => {
     setComments(await getAllCommentsByUser(username));
+    setRatings(await getAllRatingsByUsername(username));
+  };
+
+  const handleClickFollow = () => {
+    if (currentUser.username !== "")
+      createFollow(username, currentUser.username).then(() =>
+        fetchFollows(username)
+      );
+    else alert(`Please login to follow ${username}`);
+  };
+
+  const handleClickUnFollow = () => {
+    if (currentUser.username !== "")
+      deleteFollow(username, currentUser.username).then(() =>
+        fetchFollows(username)
+      );
   };
 
   return (
@@ -41,7 +73,12 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
         <>
           <div className="container">
             <div className="row d-flex justify-content-center bg-black wb-rounded-border bg-opacity-75">
-              <img height="200px" width="100%" src="/profile-banner.jpg" alt="banner" />
+              <img
+                height="200px"
+                width="100%"
+                src="/profile-banner.jpg"
+                alt="banner"
+              />
 
               <div className="container mb-2">
                 <img
@@ -51,11 +88,26 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
                   src="/profile-picture.jpeg"
                   alt="dp"
                 />
-                <button
-                  className="float-end btn btn-success rounded-pill mt-2"
-                >
-                  Follow
-                </button>
+
+                {followers?.some(
+                  (f) =>
+                    f.masterUser === username &&
+                    f.followingUser === currentUser.username
+                ) ? (
+                  <button
+                    className="float-end btn btn-danger rounded-pill mt-2"
+                    onClick={handleClickUnFollow}
+                  >
+                    Unfollow
+                  </button>
+                ) : (
+                  <div
+                    className="float-end btn btn-success rounded-pill mt-2"
+                    onClick={handleClickFollow}
+                  >
+                    Follow
+                  </div>
+                )}
               </div>
 
               <div className="container pt-4 mb-2">
@@ -81,14 +133,30 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
                   </small>
                 </>
               )} */}
-                {user.createdAt && <>
-                  <i className="bi bi-calendar3"></i>
-                <small className="me-4 ps-2">
-                  Joined {new Date(user.createdAt).toDateString()}
-                </small></>}
+                {user.createdAt && (
+                  <>
+                    <i className="bi bi-calendar3"></i>
+                    <small className="me-4 ps-2">
+                      Joined {new Date(user.createdAt).toDateString()}
+                    </small>
+                  </>
+                )}
               </div>
+              <Link
+                to=""
+                className="container mb-2 wb-text-gray"
+                data-bs-toggle="modal"
+                data-bs-target="#followsModal"
+              >
+                <small>{following?.length}</small>
+                <small className="me-4 ps-2">Following</small>
+                <small>{followers?.length}</small>
+                <small className="me-4 ps-2">Followers</small>
+              </Link>
 
-              <LatestActivity comments={comments} user={user} />
+              <LatestActivity comments={comments} ratings={ratings} user={user} />
+            <FollowsModal followers={followers} following={following} />
+
             </div>
           </div>
         </>
