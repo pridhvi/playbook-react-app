@@ -48,6 +48,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
       username: currentUser.username,
       likesUsernames: [],
       dislikesUsernames: [],
+      isFlagged: false,
     };
     createComment(newComment).then((response) => {
       setComment("");
