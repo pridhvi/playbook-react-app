@@ -12,7 +12,7 @@ import {
 } from "../../services/followsServices";
 import FollowsModal from "./FollowsModal";
 import { Link } from "react-router-dom";
-import { getAllRatingsByUsername } from "../../services/ratingsService";
+import { getAllRatingsByUsername } from "../../services/ratingsServices";
 
 interface ProfileProps {}
 
@@ -119,7 +119,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
             <LatestActivity comments={comments} ratings={ratings} user={currentUser} />
 
             {/* Edit profile modal */}
-            <EditProfile currentUser={currentUser} />
+            <EditProfile currentUser={currentUser} isAdmin={false} />
 
             <FollowsModal followers={followers} following={following} />
           </>

@@ -15,6 +15,7 @@ const Login: React.FC<LoginProps> = ({}) => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [role, setRole] = useState<string>("user");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [signupError, setSignupError] = useState<string>("");
@@ -27,17 +28,27 @@ const Login: React.FC<LoginProps> = ({}) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const signupSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
     e.preventDefault();
 
-    if(!isUniqueUsername) {
+    if (!isUniqueUsername) {
       setSignupError("This username already exists.");
       return;
     }
+    if (password.length < 8) {
+      setSignupError("Please choose a password with 8 or more characters.");
+      return;
+    }
+
+    if (username.length < 3) {
+      setSignupError("Please choose a username with 3 or more characters.");
+      return;
+    }
+
     if (username === "" || firstName === "" || password === "") {
       setSignupError("Please fill all required fields.");
       return;
     }
+    setLoading(true);
 
     const newUser: User = {
       username,
@@ -47,7 +58,7 @@ const Login: React.FC<LoginProps> = ({}) => {
       // dob: undefined,
       // createdAt: undefined,
       // isAdmin: false,
-      role: "user",
+      role,
     };
 
     dispatch(signupThunk(newUser)).then((response) => {
@@ -62,7 +73,6 @@ const Login: React.FC<LoginProps> = ({}) => {
   };
 
   const loginSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
     e.preventDefault();
 
     if (username === "" || password === "") {
@@ -70,6 +80,7 @@ const Login: React.FC<LoginProps> = ({}) => {
       return;
     }
 
+    setLoading(true);
     const loginUser: User = {
       username,
       password,
@@ -89,9 +100,13 @@ const Login: React.FC<LoginProps> = ({}) => {
     if (password !== "") setIsPasswordMatch(password === confirmPassword);
   }, [confirmPassword, password]);
 
+  // useEffect(() => {
+  //   console.log(role)
+  // }, [role]);
+
   useEffect(() => {
     // Check if username is unique
-    if (active === "signup")
+    if (active === "signup" && username !== "")
       service
         .isUser(username)
         .then(() => setIsUniqueUsername(false))
@@ -130,7 +145,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                 </label>
                 <input
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(String(e.target.value).toLowerCase())}
                   type="username"
                   className="form-control"
                   id="usernameInput"
@@ -157,8 +172,11 @@ const Login: React.FC<LoginProps> = ({}) => {
                   onClick={() => setShowPassword(!showPassword)}
                 ></i>
               </div>
-              <button type="submit" className="btn btn-success mt-3 mb-3">
-                Submit
+              <button
+                type="submit"
+                className="rounded-pill btn btn-success mt-3 mb-3"
+              >
+                Login
               </button>
             </form>
           </div>
@@ -198,13 +216,13 @@ const Login: React.FC<LoginProps> = ({}) => {
                 />
               </div>
 
-              <div className="form-group mt-3 mb-3">
+              <div className="form-group mt-3 mb-2">
                 <label htmlFor="usernameInput">
                   Username<span className="text-danger">*</span>
                 </label>
                 <input
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(String(e.target.value).toLowerCase())}
                   type="username"
                   className="form-control"
                   id="usernameInput"
@@ -217,7 +235,66 @@ const Login: React.FC<LoginProps> = ({}) => {
                 </small>
               </div>
 
-              <div className="form-group mt-3 mb-3">
+              <p className="mb-1">Role</p>
+              <div
+                className="form-check form-check-inline"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Regular user"
+              >
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="inlineRadioOptions"
+                  id="inlineRadio1"
+                  value="user"
+                  onChange={(e) => setRole(e.target.value)}
+                  defaultChecked
+                />
+                <label className="form-check-label" htmlFor="inlineRadio1">
+                  User
+                </label>
+              </div>
+
+              <div
+                className="form-check form-check-inline"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Moderates the website from inappropriate content"
+              >
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="inlineRadioOptions"
+                  id="inlineRadio3"
+                  value="moderator"
+                  onChange={(e) => setRole(e.target.value)}
+                />
+                <label className="form-check-label" htmlFor="inlineRadio3">
+                  Moderator
+                </label>
+              </div>
+
+              <div
+                className="form-check form-check-inline"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="CRUD users and user content"
+              >
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="inlineRadioOptions"
+                  id="inlineRadio2"
+                  value="admin"
+                  onChange={(e) => setRole(e.target.value)}
+                />
+                <label className="form-check-label" htmlFor="inlineRadio2">
+                  Admin
+                </label>
+              </div>
+
+              <div className="form-group mt-2 mb-3">
                 <label htmlFor="passwordInput">
                   Password<span className="text-danger">*</span>
                 </label>
@@ -273,8 +350,11 @@ const Login: React.FC<LoginProps> = ({}) => {
                   </small>
                 )}
               </div>
-              <button type="submit" className="btn btn-success mt-3 mb-3">
-                Submit
+              <button
+                type="submit"
+                className="rounded-pill btn btn-success mt-3 mb-3"
+              >
+                Signup
               </button>
             </form>
           </div>

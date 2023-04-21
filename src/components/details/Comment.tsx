@@ -18,14 +18,18 @@ const CommentComponent: React.FC<CommentProps> = ({
 }) => {
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isDislike, setIsDislike] = useState<boolean>(false);
+  const [isFlagged, setIsFlagged] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [commentString, setCommentString] = useState<string>(comment.comment);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
+    if(currentUser.role === "admin") setIsAdmin(true);
     if (comment.dislikesUsernames.find((u) => u === currentUser.username))
       setIsDislike(true);
     if (comment.likesUsernames.find((u) => u === currentUser.username))
       setIsLike(true);
+    setIsFlagged(comment.isFlagged);
   }, []);
 
   const likeClickHandler = () => {
@@ -63,8 +67,18 @@ const CommentComponent: React.FC<CommentProps> = ({
     updateComment(comment);
   };
 
+  const flagCommentClickHandler = () => {
+    if (currentUser.username === "") {
+      alert("Please login to interact with this comment!");
+      return;
+    }
+    comment.isFlagged = !isFlagged;
+    setIsFlagged(!isFlagged);
+    updateComment(comment);
+  };
+
   const editCommentClickHandler = () => {
-    if (currentUser.username === comment.username) {
+    if (currentUser.username === comment.username || isAdmin) {
       const newComment = { ...comment, comment: commentString };
       updateComment(newComment).then(() => {
         setIsEdit(!isEdit);
@@ -75,7 +89,7 @@ const CommentComponent: React.FC<CommentProps> = ({
 
   const deleteCommentClickHandler = () => {
     if (
-      currentUser.username === comment.username &&
+      (currentUser.username === comment.username || isAdmin) &&
       window.confirm("Do you really want to delete the comment?")
     ) {
       deleteComment(comment).then(() => removeComment(comment));
@@ -84,7 +98,8 @@ const CommentComponent: React.FC<CommentProps> = ({
 
   return (
     <div className={`container mt-1 d-flex flex-start wb-bg-gray wb-rounded-border 
-    ${currentUser.username === comment.username && "border border-4 border-success"}`}>
+    ${currentUser.username === comment.username && "border border-3 border-success"}
+    ${isAdmin && "border-warning"}`}>
       <img
         className="rounded-circle shadow-1-strong me-3 mt-2"
         // src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"
@@ -103,7 +118,7 @@ const CommentComponent: React.FC<CommentProps> = ({
           <span className="fw-bold mb-1">{comment.username}</span>
         </Link>
 
-        {currentUser.username === comment.username && (
+        {(currentUser.username === comment.username || isAdmin) && (
           <>
             <Link
               to=""
@@ -115,8 +130,17 @@ const CommentComponent: React.FC<CommentProps> = ({
               className="bi bi-trash ms-2 text-danger"
               onClick={deleteCommentClickHandler}
             ></Link>
+            
           </>
         )}
+        {currentUser.username !== "" && <Link
+              to=""
+              className={`bi ${isFlagged?"bi-flag-fill":"bi-flag"} ms-2 text-danger`}
+              onClick={flagCommentClickHandler}
+              data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Flag this comment"
+            ></Link>}
 
         {comment.createdAt && (
           <small className="fw-light d-block">
@@ -153,7 +177,10 @@ const CommentComponent: React.FC<CommentProps> = ({
             </div>
           </>
         ) : (
+          // <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
+          <div className="overflow-scroll" style={{maxHeight: "100px"}}>
           <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
+        </div>
         )}
 
         {/* disable buttons if not loggedin */}

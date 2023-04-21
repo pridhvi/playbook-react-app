@@ -32,15 +32,20 @@ const ProfileCommentComponent: React.FC<ProfileCommentProps> = ({
         height="60"
       />
       <div className="mt-2 mb-2">
-      <Link
+        <Link
           className="text-decoration-none text-white"
           to={`/profile/${comment.username}`}
           target="_blank"
         >
-          <h6 className="fw-bold mb-1">{comment.username}</h6>
+          <span className="fw-bold mb-1">{comment.username}</span>
         </Link>
+        <i
+          className={`bi ${
+            comment.isFlagged ? "bi-flag-fill" : "bi-flag"
+          } ms-2 text-danger`}
+        ></i>
         {comment.createdAt && (
-          <small className="fw-light">
+          <small className="fw-light d-block">
             {new Date(comment.createdAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
@@ -48,19 +53,24 @@ const ProfileCommentComponent: React.FC<ProfileCommentProps> = ({
             })}
           </small>
         )}
-        <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
-        {/* disable buttons if not loggedin */}
-        {/* <Link to="" className="text-danger me-1 mt-3"> */}
-          <i className={`bi ${isLike ? "bi-heart-fill" : "bi-heart"} text-danger me-1 mt-3`}></i>
-        {/* </Link> */}
+        <div className="overflow-scroll" style={{maxHeight: "100px"}}>
+          <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
+        </div>
+        
+        <i
+          className={`bi ${
+            isLike ? "bi-heart-fill" : "bi-heart"
+          } text-danger me-1 mt-3`}
+        ></i>
+        
         <small className="me-4">{comment.likesUsernames.length}</small>
-        {/* <Link to="" className="text-white me-1 mt-3"> */}
-          <i
-            className={`bi ${
-              isDislike ? "bi-hand-thumbs-down-fill" : "bi-hand-thumbs-down"
-            } text-danger me-1 mt-3`}
-          ></i>
-        {/* </Link> */}
+        
+        <i
+          className={`bi ${
+            isDislike ? "bi-hand-thumbs-down-fill" : "bi-hand-thumbs-down"
+          } text-danger me-1 mt-3`}
+        ></i>
+        
         <small className="">{comment.dislikesUsernames.length}</small>
 
         <Link

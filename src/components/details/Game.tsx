@@ -9,13 +9,12 @@ import {
 } from "../../services/commentsServices";
 import CommentComponent from "./Comment";
 import { useSelector } from "react-redux";
-
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import RatingSvg from "./RatingSvg";
 import RatingModal from "./RatingModal";
 import { Link } from "react-router-dom";
-import { getAllRatingsByItem } from "../../services/ratingsService";
+import { getAllRatingsByItem } from "../../services/ratingsServices";
 
 interface GameProps {}
 
@@ -41,16 +40,12 @@ const GameComponent: React.FC<GameProps> = ({}) => {
   useEffect(() => {
     fetchGame();
     fetchComments();
-    fetchRatings(); //.then(()=>calculatePlaybookRating());
+    fetchRatings();
   }, []);
 
   useEffect(() => {
-    // console.log(ratings)
     if (ratings) {
       const u: any = ratings.find((r) => r.username === currentUser.username);
-      // ratings.filter((r: Rating) => {
-      //   if (r.username === currentUser.username) return r.rating;
-      // })[0];
       if (u !== undefined) {
         setUserRatingObj({ ...u, isNew: false });
         setUserRating(u.rating);
@@ -60,7 +55,6 @@ const GameComponent: React.FC<GameProps> = ({}) => {
   }, [ratings]);
 
   const calculatePlaybookRating = () => {
-    console.log(ratings);
     let playbookTotalRatings = 0;
     ratings.map((r) => (playbookTotalRatings += Number(r.rating)));
     const playbookAverage = playbookTotalRatings / ratings.length;
@@ -119,6 +113,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
       username: currentUser.username,
       likesUsernames: [],
       dislikesUsernames: [],
+      isFlagged: false,
     };
     createComment(newComment).then((response) => {
       setComment("");
@@ -202,7 +197,7 @@ const GameComponent: React.FC<GameProps> = ({}) => {
               />
             )}
 
-            <div className="col-12 col-lg-8 wb-game container">
+            <div className="col-12 col-lg-8 wb-game container row m-auto">
               {game.cover ? (
                 <img
                   src={`https://images.igdb.com/igdb/image/upload/t_1080p/${
@@ -210,44 +205,69 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                   }`}
                   height="300px"
                   alt="cover"
+                  className="col-5 col-xl-3 border border-dark border-3 p-0 m-auto m-xl-0"
                 />
               ) : (
-                <img src="/no-image.jpeg" height="300px" alt="cover" />
+                <img
+                  src="/no-image.jpeg"
+                  height="300px"
+                  alt="cover"
+                  className="col-5 col-xl-3 border border-dark border-3 p-0 m-auto m-xl-0"
+                />
               )}
 
-              <div className="d-block d-xl-inline ms-xl-2">
-                <h1 className="d-block d-xl-inline ms-xl-2">{game.name}</h1>
-                <Link
-                  to=""
-                  className={`${currentUser.user === ""? "d-none":"d-block d-xl-inline"} text-decoration-none`}
-                  data-bs-toggle="modal"
-                  data-bs-target="#ratingModal"
-                >
-                  <RatingSvg
-                    rating={userRating}
-                    size="120px"
-                    colour="green"
-                    type="You"
-                  />
-                </Link>
-                {currentUser.user === "" && <RatingSvg
-                    rating={userRating}
-                    size="120px"
-                    colour="green"
-                    type="You"
-                  />}
-                <RatingSvg
-                  rating={playbookRating}
-                  size="100px"
-                  colour="yellow"
-                  type="Playbook"
-                />
-                <RatingSvg
-                  rating={game.rating}
-                  size="90px"
-                  colour="black"
-                  type="IGDB"
-                />
+              <div className="col-12 col-xl-8 row container">
+                <div className="col-12  col-xl-6 container ms-xl-3 d-flex align-items-center">
+                  <h1 className="d-none d-xl-inline">{game.name}</h1>
+                  <h4 className="d-inline d-xl-none">{game.name}</h4>
+                </div>
+
+                <div className="col-12 col-xl-6 row d-flex align-items-center">
+                  {/* <p className="col-12">Ratings</p> */}
+                  
+                  {currentUser.username !== "" ? (
+                    <Link
+                      to=""
+                      className="col-4 m-0 text-decoration-none"
+                      data-bs-toggle="modal"
+                      data-bs-target="#ratingModal"
+                    >
+                      <RatingSvg
+                        rating={userRating}
+                        size="120px"
+                        colour="green"
+                        type="You"
+                      />
+                    </Link>
+                  ) : (
+                    <div className="col-4 m-0">
+                      <RatingSvg
+                        rating={userRating}
+                        size="120px"
+                        colour="green"
+                        type="Login to rate"
+                      />
+                    </div>
+                  )}
+                  <div className="col-4 m-0 ps-4">
+                    <RatingSvg
+                      rating={playbookRating}
+                      size="100px"
+                      colour="yellow"
+                      type="Playbook"
+                    />
+                  </div>
+                  <div className="col-4 m-0">
+                    <RatingSvg
+                      rating={game.rating}
+                      size="90px"
+                      colour="black"
+                      type="IGDB"
+                    />
+                  </div>
+
+                </div>
+
                 {userRatingObj && (
                   <RatingModal
                     rating={userRatingObj}

@@ -56,7 +56,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({}) => {
             </span>
           </Link>
 
-          <Link
+          {currentUser.username !== "" && <Link
             className="nav-link p-0 d-flex justify-content-center"
             to="/profile"
           >
@@ -68,7 +68,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({}) => {
               <i className="me-2 bi bi-person"></i>
               <span>Profile</span>
             </span>
-          </Link>
+          </Link>}
         </div>
 
         {currentUser.username === "" ? (

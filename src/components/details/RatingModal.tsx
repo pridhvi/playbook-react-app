@@ -8,7 +8,7 @@ import {
   createRating,
   deleteRating,
   updateRating,
-} from "../../services/ratingsService";
+} from "../../services/ratingsServices";
 
 interface RatingModalProps {
   itemType: string;

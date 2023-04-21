@@ -149,6 +149,7 @@ export type Comment = {
   username: string;
   likesUsernames: string[];
   dislikesUsernames: string[];
+  isFlagged: boolean;
   createdAt?: Date;
 };
 

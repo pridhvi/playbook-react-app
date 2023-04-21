@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getAllCommentsByUser } from "../../services/commentsServices";
 import { Comment, Follow, Rating, User } from "../../types";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { findUserByUsername } from "../../services/usersServices";
 import LatestActivity from "./LatestActivity";
 import {
@@ -13,7 +13,8 @@ import {
 } from "../../services/followsServices";
 import { Link } from "react-router-dom";
 import FollowsModal from "./FollowsModal";
-import { getAllRatingsByUsername } from "../../services/ratingsService";
+import { getAllRatingsByUsername } from "../../services/ratingsServices";
+import EditProfile from "./EditProfile";
 
 interface OtherProfileProps {}
 
@@ -26,12 +27,17 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
   const [followers, setFollowers] = useState<Follow[]>([]);
   const [following, setFollowing] = useState<Follow[]>([]);
   const [ratings, setRatings] = useState<Rating[]>([]);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const { pathname } = useLocation();
   const username: string = pathname.split("/")[2];
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (username) {
+
+      if(currentUser.role === "admin") setIsAdmin(true);
+      if (username === currentUser.username) navigate("/profile");
       fetchUser(username);
       fetchFollows(username);
       fetchLatestActivity(username);
@@ -88,6 +94,15 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
                   src="/profile-picture.jpeg"
                   alt="dp"
                 />
+
+              {isAdmin && <button
+                className="float-end btn btn-light rounded-pill mt-2"
+                data-bs-toggle="modal"
+                data-bs-target="#editProfileModal"
+              >
+                Edit Profile
+              </button>}
+              <EditProfile currentUser={user} isAdmin={isAdmin} />
 
                 {followers?.some(
                   (f) =>

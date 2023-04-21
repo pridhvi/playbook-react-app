@@ -3,12 +3,14 @@ import { User } from "../../types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/Store";
 import { updateUserThunk } from "../../services/usersThunks";
+import { updateUser } from "../../services/usersServices";
 
 interface EditProfileProps {
   currentUser: User;
+  isAdmin: boolean;
 }
 
-const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
+const EditProfile: React.FC<EditProfileProps> = ({ currentUser, isAdmin }) => {
   const [updatedUser, setUpdatedUser] = useState<User>();
   const dispatch = useDispatch<AppDispatch>();
   // const [message, setMessage] = useState<string>("");
@@ -23,10 +25,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ currentUser }) => {
   }, []);
 
   const handleUserUpdate = () => {
-    if (updatedUser)
-      dispatch(updateUserThunk(updatedUser)).then(() =>{
+    if (updatedUser){
+    if(isAdmin) updateUser(updatedUser).then(() =>{
+      if(closeModalRef.current) closeModalRef.current.click();
+    });
+    else dispatch(updateUserThunk(updatedUser)).then(() =>{
         if(closeModalRef.current) closeModalRef.current.click();
-      });
+      });}
   };
 
   return (

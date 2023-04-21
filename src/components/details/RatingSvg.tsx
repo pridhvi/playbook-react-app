@@ -11,7 +11,7 @@ interface RatingSvgProps {
 const RatingSvg: React.FC<RatingSvgProps> = ({ rating, size, colour, type }) => {
   return (
     <svg
-      className="gauge filter-great ms-4 mb-4"
+      className="gauge filter-great"
       viewBox="0 0 110 110"
       width={size}
       height={size}
@@ -53,7 +53,8 @@ const RatingSvg: React.FC<RatingSvgProps> = ({ rating, size, colour, type }) => 
         dy="7"
         fontSize="12"
       >
-        {rating || rating === 0 ? type : ""}
+        {/* {rating || rating === 0 ? type : ""} */}
+        {type}
       </text>
     </svg>
   );
