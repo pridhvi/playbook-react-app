@@ -22,9 +22,11 @@ const CommentComponent: React.FC<CommentProps> = ({
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [commentString, setCommentString] = useState<string>(comment.comment);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isModerator, setIsModerator] = useState<boolean>(false);
 
   useEffect(() => {
-    if(currentUser.role === "admin") setIsAdmin(true);
+    if (currentUser.role === "admin") setIsAdmin(true);
+    else if (currentUser.role === "moderator") setIsModerator(true);
     if (comment.dislikesUsernames.find((u) => u === currentUser.username))
       setIsDislike(true);
     if (comment.likesUsernames.find((u) => u === currentUser.username))
@@ -78,7 +80,7 @@ const CommentComponent: React.FC<CommentProps> = ({
   };
 
   const editCommentClickHandler = () => {
-    if (currentUser.username === comment.username || isAdmin) {
+    if (currentUser.username === comment.username || isAdmin || isModerator) {
       const newComment = { ...comment, comment: commentString };
       updateComment(newComment).then(() => {
         setIsEdit(!isEdit);
@@ -89,7 +91,7 @@ const CommentComponent: React.FC<CommentProps> = ({
 
   const deleteCommentClickHandler = () => {
     if (
-      (currentUser.username === comment.username || isAdmin) &&
+      (currentUser.username === comment.username || isAdmin || isModerator) &&
       window.confirm("Do you really want to delete the comment?")
     ) {
       deleteComment(comment).then(() => removeComment(comment));
@@ -97,9 +99,14 @@ const CommentComponent: React.FC<CommentProps> = ({
   };
 
   return (
-    <div className={`container mt-1 d-flex flex-start wb-bg-gray wb-rounded-border 
-    ${currentUser.username === comment.username && "border border-3 border-success"}
-    ${isAdmin && "border-warning"}`}>
+    <div
+      className={`container mt-1 d-flex flex-start wb-bg-gray wb-rounded-border 
+    ${
+      currentUser.username === comment.username &&
+      "border border-3 border-success"
+    }
+    ${isAdmin && "border-warning"}`}
+    >
       <img
         className="rounded-circle shadow-1-strong me-3 mt-2"
         // src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"
@@ -115,10 +122,21 @@ const CommentComponent: React.FC<CommentProps> = ({
           to={`/profile/${comment.username}`}
           target="_blank"
         >
-          <span className="fw-bold mb-1">{comment.username}</span>
+          <span className="fw-bold mb-1 me-1">{comment.username}</span>
         </Link>
 
-        {(currentUser.username === comment.username || isAdmin) && (
+        {comment.createdAt && (
+          <small className="fw-light wb-text-gray">
+            .{" "}
+            {new Date(comment.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </small>
+        )}
+
+        {(currentUser.username === comment.username || isAdmin || isModerator) && (
           <>
             <Link
               to=""
@@ -130,26 +148,19 @@ const CommentComponent: React.FC<CommentProps> = ({
               className="bi bi-trash ms-2 text-danger"
               onClick={deleteCommentClickHandler}
             ></Link>
-            
           </>
         )}
-        {currentUser.username !== "" && <Link
-              to=""
-              className={`bi ${isFlagged?"bi-flag-fill":"bi-flag"} ms-2 text-danger`}
-              onClick={flagCommentClickHandler}
-              data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Flag this comment"
-            ></Link>}
-
-        {comment.createdAt && (
-          <small className="fw-light d-block">
-            {new Date(comment.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </small>
+        {currentUser.username !== "" && (
+          <Link
+            to=""
+            className={`bi ${
+              isFlagged ? "bi-flag-fill" : "bi-flag"
+            } ms-2 text-danger`}
+            onClick={flagCommentClickHandler}
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Flag this comment"
+          ></Link>
         )}
 
         {/* Edit comment */}
@@ -178,9 +189,9 @@ const CommentComponent: React.FC<CommentProps> = ({
           </>
         ) : (
           // <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
-          <div className="overflow-scroll" style={{maxHeight: "100px"}}>
-          <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
-        </div>
+          <div className="overflow-scroll" style={{ maxHeight: "100px" }}>
+            <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
+          </div>
         )}
 
         {/* disable buttons if not loggedin */}
@@ -204,6 +215,14 @@ const CommentComponent: React.FC<CommentProps> = ({
           ></i>
         </Link>
         <small className="">{comment.dislikesUsernames.length}</small>
+
+        {isModerator && <Link
+          to={`/details/${comment.itemType}/${comment.itemId}`}
+          className="text-decoration-none d-block text-info"
+          target="_blank"
+        >
+          Go to comment
+        </Link>}
       </div>
     </div>
   );

@@ -166,7 +166,9 @@ const Search: React.FC<SearchProps> = ({}) => {
         {searchResult && (
           <div className="col-12 row container d-flex justify-content-center">
             {searchResult?.map((s: SearchResult) => (
+              <div className="card col-5 col-sm-4 col-lg-3 col-xxl-2 wb-search-item m-1 m-lg-3 p-1">
               <SearchItem key={s.id} s={s} type={type} />
+              </div>
             ))}
           </div>
         )}

@@ -366,22 +366,6 @@ const GameComponent: React.FC<GameProps> = ({}) => {
                 ) : null}
               </div>
 
-              {/* Rating */}
-              {/* <div className="container m-3 border row wb-bg-gray wb-rounded-border">
-                <div className="col-9 d-flex justify-content-center">
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                  <i className="bi bi-star m-2"></i>
-                </div>
-              </div> */}
-
               {/* Comments Section */}
 
               <div className="pb-5">

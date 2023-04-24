@@ -23,7 +23,6 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
   }
 
   return (
-    <div className="card col-5 col-sm-4 col-lg-3 col-xxl-2 wb-search-item m-1 m-lg-3 p-1">
       <div className="card-body">
         <img
           src={
@@ -53,7 +52,6 @@ const SearchItem: React.FC<SearchItemProps> = ({ s, type }) => {
           Details
         </Link>
       </div>
-    </div>
   );
 };
 

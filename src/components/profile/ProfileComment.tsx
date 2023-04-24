@@ -37,15 +37,12 @@ const ProfileCommentComponent: React.FC<ProfileCommentProps> = ({
           to={`/profile/${comment.username}`}
           target="_blank"
         >
-          <span className="fw-bold mb-1">{comment.username}</span>
+          <span className="fw-bold mb-1 me-1">{comment.username}</span>
         </Link>
-        <i
-          className={`bi ${
-            comment.isFlagged ? "bi-flag-fill" : "bi-flag"
-          } ms-2 text-danger`}
-        ></i>
+
         {comment.createdAt && (
-          <small className="fw-light d-block">
+          <small className="fw-light wb-text-gray">
+            .{" "}
             {new Date(comment.createdAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
@@ -53,24 +50,31 @@ const ProfileCommentComponent: React.FC<ProfileCommentProps> = ({
             })}
           </small>
         )}
-        <div className="overflow-scroll" style={{maxHeight: "100px"}}>
+
+        <i
+          className={`bi ${
+            comment.isFlagged ? "bi-flag-fill" : "bi-flag"
+          } ms-2 text-danger`}
+        ></i>
+
+        <div className="overflow-scroll" style={{ maxHeight: "100px" }}>
           <p className="mt-2 mb-2 fst-italic">{comment.comment}</p>
         </div>
-        
+
         <i
           className={`bi ${
             isLike ? "bi-heart-fill" : "bi-heart"
           } text-danger me-1 mt-3`}
         ></i>
-        
+
         <small className="me-4">{comment.likesUsernames.length}</small>
-        
+
         <i
           className={`bi ${
             isDislike ? "bi-hand-thumbs-down-fill" : "bi-hand-thumbs-down"
           } text-danger me-1 mt-3`}
         ></i>
-        
+
         <small className="">{comment.dislikesUsernames.length}</small>
 
         <Link

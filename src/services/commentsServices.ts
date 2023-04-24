@@ -49,3 +49,10 @@ export const getAllCommentsByUser = async (
   );
   return comments.data;
 };
+
+export const getFlaggedComments = async () => {
+  const comments: AxiosResponse<Comment[], any> = await api.get(
+    `${BASE_URL}/flagged`
+  );
+  return comments.data;
+};
