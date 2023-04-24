@@ -7,20 +7,21 @@ interface LatestActivityProps {
   comments: Comment[];
   ratings: Rating[];
   user: User;
+  height: string;
 }
 
 const LatestActivity: React.FC<LatestActivityProps> = ({
   comments,
   user,
   ratings,
+  height
 }) => {
   return (
     <>
-      <h5>Latest Activity:</h5>
       <div className="row col-12">
         <div className="col-12 col-sm-6 col-lg-6 mb-5">
           <p>Comments</p>
-          <div className="overflow-scroll" style={{ maxHeight: "700px" }}>
+          <div className="overflow-scroll" style={{ maxHeight: height }}>
             {comments.map((comment) => (
               <ProfileCommentComponent
                 key={comment._id}
@@ -34,7 +35,7 @@ const LatestActivity: React.FC<LatestActivityProps> = ({
         <div className="col-12 col-sm-6 col-lg-6 mb-5">
           <p>Ratings</p>
 
-          <div className="overflow-scroll" style={{ maxHeight: "700px" }}>
+          <div className="overflow-scroll" style={{ maxHeight: height }}>
           {ratings.map((rating) => (
             <ProfileRatingComponent key={rating._id} rating={rating} />
           ))}

@@ -4,8 +4,12 @@ import { Character, Comment, Game } from "../../types";
 import { findCharacterById } from "../../services/igdbServices";
 import LoadingSpinner from "../LoadingSpinner";
 import { useSelector } from "react-redux";
-import { createComment, getAllCommentsByItem } from "../../services/commentsServices";
+import {
+  createComment,
+  getAllCommentsByItem,
+} from "../../services/commentsServices";
 import CommentComponent from "./Comment";
+import { Link } from "react-router-dom";
 
 interface CharacterProps {}
 
@@ -24,21 +28,23 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
   const fetchCharacter = async () => {
     setCharacter(await findCharacterById(characterId));
   };
-  
+
   const fetchComments = async () => {
     setComments(await getAllCommentsByItem("characters", characterId));
   };
 
   const removeComment = (comment: Comment) => {
-    setComments(comments.filter((c)=> comment._id !== c._id));
-  }
-  
+    setComments(comments.filter((c) => comment._id !== c._id));
+  };
+
   const editComment = (comment: Comment) => {
-    setComments(comments.filter((c)=> {
-      if(comment._id === c._id) c.comment = comment.comment;
-      return c;
-    }));
-  }
+    setComments(
+      comments.filter((c) => {
+        if (comment._id === c._id) c.comment = comment.comment;
+        return c;
+      })
+    );
+  };
 
   const commentSubmitHandler = () => {
     const newComment: Comment = {
@@ -61,26 +67,38 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
       {character ? (
         <>
           <h1>{character.name}</h1>
-          {character.mug_shot && (
-            <img
-              src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${
-                character.mug_shot?.url.split("/")[7]
-              }`}
-              height="250px"
-              alt="cover"
-            />
-          )}
+          <div className="row">
+            {character.mug_shot && (
+              <img
+                src={`https://images.igdb.com/igdb/image/upload/t_cover_big/${
+                  character.mug_shot?.url.split("/")[7]
+                }`}
+                height="250px"
+                alt="cover"
+                className="col-2"
+              />
+            )}
+
+            {character.description ? (
+              <div className="col-10 d-flex align-items-center">
+                {/* <h3>Description: </h3> */}
+                <p>{character.description}</p>
+              </div>
+            ) : null}
+          </div>
 
           <h3 className="">Games: </h3>
+          <ul className="list-group w-50">
           {character.games.map((g: Game) => (
-            <p key={g.id}>{g.name}</p>
+            <li key={g.id} className="list-group-item bg-black bg-opacity-50">
+            <Link target="_blank" to={`/details/games/${g.id}`}
+            className="text-decoration-none  me-2">
+              {g.name}
+            </Link>
+            </li>
           ))}
-          {character.description ? (
-            <>
-              <h3>Description: </h3>
-              <p>{character.description}</p>
-            </>
-          ) : null}
+          </ul>
+
           {character.country_name ? (
             <>
               <h3>Country: </h3>
@@ -133,7 +151,9 @@ const CharacterComponent: React.FC<CharacterProps> = ({}) => {
             ))}
           </div>
         </>
-      ) : <LoadingSpinner />}
+      ) : (
+        <LoadingSpinner />
+      )}
     </div>
   );
 };

@@ -4,13 +4,16 @@ import {
   getTrendingGames,
   getTrendingUsers,
 } from "../../services/trendingServices";
-import { Comment, User } from "../../types";
-import { getFlaggedComments } from "../../services/commentsServices";
+import { Comment, Follow, Rating, User } from "../../types";
+import { getAllCommentsByUser, getFlaggedComments } from "../../services/commentsServices";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../LoadingSpinner";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import CommentComponent from "../details/Comment";
+import { getAllFollowsByFollowingUser, getAllFollowsByMasterUser } from "../../services/followsServices";
+import { getAllRatingsByUsername } from "../../services/ratingsServices";
+import LatestActivity from "../profile/LatestActivity";
 
 interface HomeProps {}
 
@@ -21,17 +24,37 @@ const Home: React.FC<HomeProps> = ({}) => {
   const [flaggedComments, setFlaggedComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isShowGames, setIsShowGames] = useState<boolean>(false);
+  const [isShowFeed, setIsShowFeed] = useState<boolean>(true);
+
+  const [comments, setComments] = useState<Comment[]>([]);
+  // const [followers, setFollowers] = useState<Follow[]>([]);
+  // const [following, setFollowing] = useState<Follow[]>([]);
+  const [ratings, setRatings] = useState<Rating[]>([]);
 
   useEffect(() => {
     fetchLatestData();
+    if (currentUser.username !== "") {
+      // fetchFollows(currentUser.username);
+      fetchLatestActivity(currentUser.username);
+    }
   }, []);
+
+  // const fetchFollows = async (username: string) => {
+  //   setFollowers(await getAllFollowsByMasterUser(username));
+  //   setFollowing(await getAllFollowsByFollowingUser(username));
+  // };
+
+  const fetchLatestActivity = async (username: string) => {
+    setComments(await getAllCommentsByUser(username));
+    setRatings(await getAllRatingsByUsername(username));
+  };
 
   const fetchLatestData = async () => {
     setLoading(true);
     setTrendingGames(await getTrendingGames());
     setTrendingUsers(await getTrendingUsers());
-    // if(currentUser.role === "moderator")
-    setFlaggedComments(await getFlaggedComments());
+    if (currentUser.role === "moderator")
+      setFlaggedComments(await getFlaggedComments());
     setLoading(false);
   };
 
@@ -68,7 +91,7 @@ const Home: React.FC<HomeProps> = ({}) => {
   };
 
   return (
-    <div className="row container-fluid m-auto mt-lg-5 mb-5">
+    <div className="row container-fluid m-auto pt-lg-5 pb-5 bg-black bg-opacity-75">
       <div className="col-12 col-md-12 container row m-auto d-flex justify-content-center">
         {/* {currentUser.username !== "" && (
           <div className="col-12">
@@ -80,9 +103,9 @@ const Home: React.FC<HomeProps> = ({}) => {
 
         <div
           className={`jumbotron col-12 border border-3 bg-black wb-rounded-border bg-opacity-75 mb-4
-        ${currentUser.role === "moderator" && "border-warning"} ${
-            currentUser.role === "admin" && "border-danger"
-          }`}
+          ${currentUser.role === "user" && "border-success"} ${
+            currentUser.role === "moderator" && "border-warning"
+          } ${currentUser.role === "admin" && "border-danger"}`}
         >
           <h1 className="display-6 text-info d-flex justify-content-center">
             {currentUser.username !== ""
@@ -101,28 +124,53 @@ const Home: React.FC<HomeProps> = ({}) => {
           </p>
           <hr className="my-4" />
           <p className="wb-text-gray text-center d-flex justify-content-center">
-            Join the Playbook community today and start connecting with other
-            gamers from around the world.
+            {currentUser.username === ""
+              ? "Join the Playbook community today and start connecting with other gamers from around the world."
+              : "Spread the word about Playbook today and start connecting with your gamer friends and introduce them to the community."}
           </p>
           <p className="lead d-flex justify-content-center">
-            <Link
-              className="btn"
-              to="/login"
-              role="button"
-              style={{ backgroundColor: "#7FFFD4" }}
-            >
-              Signup
-            </Link>
+            {currentUser.username === "" && (
+              <Link
+                className="btn"
+                to="/login"
+                role="button"
+                style={{ backgroundColor: "#7FFFD4" }}
+              >
+                Signup
+              </Link>
+            )}
           </p>
         </div>
 
         {loading && <LoadingSpinner />}
 
+        {(currentUser.role === "user" || currentUser.role === "admin") && (
+          <>
+          <Link to="" onClick={() => setIsShowFeed(!isShowFeed)}
+              className="d-flex justify-content-center">
+                {isShowFeed ? "Close Feed" : "Show Feed"}
+              </Link>
+          {isShowFeed && <div className="col-12">
+            <hr className="text-white" />
+            <h2 className="d-flex justify-content-center">Feed</h2>
+            <hr className="my-3 text-white" />
+            <div className="col-12 mb-5">
+            <LatestActivity
+              comments={comments}
+              ratings={ratings}
+              user={currentUser}
+              height="500px"
+            />
+            </div>
+          </div>}
+          </>
+        )}
+
         {currentUser.role === "moderator" && (
           <div className="col-12">
-            <h2 className="d-flex justify-content-center text-black">
-              Flagged Comments
-            </h2>
+            <hr className="text-warning" />
+            <h2 className="d-flex justify-content-center">Flagged Comments</h2>
+            <hr className="my-3 text-warning" />
             <div className="col-12 mb-5">
               {flaggedComments && (
                 <div
@@ -145,16 +193,20 @@ const Home: React.FC<HomeProps> = ({}) => {
             </div>
           </div>
         )}
-
+        <hr className="" />
         {/* Trending Section */}
-        <h1 className="d-flex justify-content-center text-black">Trending</h1>
+        <h2 className="d-flex justify-content-center">Trending</h2>
+        <hr className="my-3 " />
         {trendingGames && (
-          <>
-            <h3>Games</h3>
-            <Link to="" onClick={() => setIsShowGames(!isShowGames)}>
-              {isShowGames ? "Minimise games" : "Show all games"}
-            </Link>
-            <div className="col-12 col-lg-9 row d-flex">
+          <div className="col-12 col-lg-9 row">
+            <div>
+              <small className="display-6 me-2">Games</small>
+              <Link to="" onClick={() => setIsShowGames(!isShowGames)}>
+                {isShowGames ? "Minimise games" : "Show all games"}
+              </Link>
+            </div>
+
+            <div className="row d-flex">
               {isShowGames ? (
                 <>
                   {trendingGames.map((g: any) => (
@@ -224,11 +276,13 @@ const Home: React.FC<HomeProps> = ({}) => {
                 </Carousel>
               )}
             </div>
-          </>
+          </div>
         )}
 
-        <div className="container mt-5 col-5 col-lg-4 col-xl-3 overflow-scroll bg-black wb-rounded-border bg-opacity-75"
-        style={{maxHeight: "360px"}}>
+        <div
+          className="container mt-5 col-5 col-lg-4 col-xl-3 overflow-scroll bg-black wb-rounded-border bg-opacity-75"
+          style={{ maxHeight: "360px" }}
+        >
           {trendingUsers && (
             <>
               <div className="container row rounded-top me-0 ms-0 ps-0 pe-0 pt-2 pb-2">
@@ -253,12 +307,14 @@ const Home: React.FC<HomeProps> = ({}) => {
                     <div className="col-7 text-decoration-none">
                       <span className="d-block fw-bold text-white text-truncate">
                         {u.firstName} {u.lastName}
-                        <i
-                          className={`bi bi-check-circle-fill
+                        {(u.role === "admin" || u.role === "moderator") && (
+                          <i
+                            className={`bi bi-check-circle-fill
                         ${u.role === "admin" && "text-danger"} ${
-                            u.role === "moderator" && "text-warning"
-                          }`}
-                        ></i>
+                              u.role === "moderator" && "text-warning"
+                            }`}
+                          ></i>
+                        )}
                       </span>
                       <span className="d-block text-white">@{u.username}</span>
                     </div>

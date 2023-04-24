@@ -35,8 +35,7 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
 
   useEffect(() => {
     if (username) {
-
-      if(currentUser.role === "admin") setIsAdmin(true);
+      if (currentUser.role === "admin") setIsAdmin(true);
       if (username === currentUser.username) navigate("/profile");
       fetchUser(username);
       fetchFollows(username);
@@ -95,14 +94,16 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
                   alt="dp"
                 />
 
-              {isAdmin && <button
-                className="float-end btn btn-light rounded-pill mt-2"
-                data-bs-toggle="modal"
-                data-bs-target="#editProfileModal"
-              >
-                Edit Profile
-              </button>}
-              <EditProfile currentUser={user} isAdmin={isAdmin} />
+                {isAdmin && (
+                  <button
+                    className="float-end btn btn-light rounded-pill mt-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editProfileModal"
+                  >
+                    Edit Profile
+                  </button>
+                )}
+                <EditProfile currentUser={user} isAdmin={isAdmin} />
 
                 {followers?.some(
                   (f) =>
@@ -152,7 +153,12 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
                   <>
                     <i className="bi bi-calendar3"></i>
                     <small className="me-4 ps-2">
-                      Joined {new Date(user.createdAt).toDateString()}
+                      Joined{" "}
+                      {new Date(user.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     </small>
                   </>
                 )}
@@ -169,9 +175,14 @@ const OtherProfile: React.FC<OtherProfileProps> = ({}) => {
                 <small className="me-4 ps-2">Followers</small>
               </Link>
 
-              <LatestActivity comments={comments} ratings={ratings} user={user} />
-            <FollowsModal followers={followers} following={following} />
-
+              <h5>Latest Activity:</h5>
+              <LatestActivity
+                comments={comments}
+                ratings={ratings}
+                user={user}
+                height="700px"
+              />
+              <FollowsModal followers={followers} following={following} />
             </div>
           </div>
         </>

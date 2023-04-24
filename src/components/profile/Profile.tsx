@@ -100,7 +100,12 @@ const Profile: React.FC<ProfileProps> = ({}) => {
               )} */}
               <i className="bi bi-calendar3"></i>
               <small className="me-4 ps-2">
-                Joined {new Date(currentUser.createdAt).toDateString()}
+                Joined{" "}
+                {new Date(currentUser.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </small>
             </div>
 
@@ -116,7 +121,13 @@ const Profile: React.FC<ProfileProps> = ({}) => {
               <small className="me-4 ps-2">Followers</small>
             </Link>
 
-            <LatestActivity comments={comments} ratings={ratings} user={currentUser} />
+            <h5>Latest Activity:</h5>
+            <LatestActivity
+              comments={comments}
+              ratings={ratings}
+              user={currentUser}
+              height="700px"
+            />
 
             {/* Edit profile modal */}
             <EditProfile currentUser={currentUser} isAdmin={false} />

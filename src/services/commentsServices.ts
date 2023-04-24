@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { Comment, User } from "../types";
+import { Comment } from "../types";
 
 // const BASE_URL = "http://localhost:4000/api/comments";
 const BASE_URL = "https://playbook-node-server.onrender.com/api/comments";

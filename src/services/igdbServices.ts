@@ -21,6 +21,15 @@ export const findGameById = async (id: number) => {
   return game;
 };
 
+export const findGameNameById = async (id: number) => {
+  const gameData: AxiosResponse<Game[], any> = await axios.get(
+    `${IGDB_API_URL}/games/name/${id}`
+  );
+  let game: Game = gameData.data[0];
+
+  return game;
+};
+
 export const findCharacterById = async (characterId: number) => {
   const characterData: AxiosResponse<Character[], any> = await axios.get(
     `${IGDB_API_URL}/characters/${characterId}`
