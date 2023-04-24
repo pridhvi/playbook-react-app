@@ -280,7 +280,7 @@ const Home: React.FC<HomeProps> = ({}) => {
         )}
 
         <div
-          className="container mt-5 col-5 col-lg-4 col-xl-3 overflow-scroll bg-black wb-rounded-border bg-opacity-75"
+          className="container mt-5 col-10 col-sm-7 col-lg-4 col-xl-3 overflow-scroll bg-black wb-rounded-border bg-opacity-75"
           style={{ maxHeight: "360px" }}
         >
           {trendingUsers && (
